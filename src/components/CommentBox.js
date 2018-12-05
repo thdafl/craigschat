@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ChatBox = ({userName, text, onTextChange, onButtonClick}) => (
+export const CommentBox = ({userName, text, onTextChange, onButtonClick}) => (
   <div>
     <input
       name='userName'
