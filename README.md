@@ -1,46 +1,53 @@
 ### Database Structure :floppy_disk:
 
+
 {
-    "users": {
-        "user1": {
-            "name": "John"
-        },
-        "user2": {
-            "name": "Paul"
-        }
+  "users": {
+    "user1": {
+      "name": "John"
     },
-    "chatrooms": {
-        "chatroom1": {
-            "owner": "John"
-        },
-        "chatroom2": {
-            "owner": "Paul"
-        }
-    },
-    "messages": {
-        "chatroom1": {
-            "message1": {
-                "user": "user1",
-                "text": "Hello",
-                "date": "1234567890"
-            }, 
-            "message2": {
-                "user": "user2",
-                "text": "Goodbye",
-                "date": "1234567890"
-            }
-        },
-        "chatroom2": {
-            "message1": {
-                "user": "user1",
-                "text": "Hey!",
-                "date": "1234567890"
-            }, 
-            "message2": {
-                "user": "user2",
-                "text": "Ho!",
-                "date": "1234567890"
-            }
-        }
+    "user2": {
+      "name": "Paul"
     }
+  },
+  "chatrooms": {
+    "chatroomUid": {
+      "id": "chatroomuId"
+      "owner": "John",
+      "description": "This is a room for John and Yoko",
+      "messages": {
+        "messageUid": {
+          "id": "messageUid"
+            "user": "user1",
+            "text": "Hello",
+            "date": "1234567890"
+        }, 
+        "messageUid": {
+         "id": "messageUid",
+            "user": "user2",
+            "text": "Goodbye",
+            "date": "1234567890"
+        }
+      },
+      "chatroomuId": {
+        "id": "chatroomuId",
+        "owner": "Paul",
+        "description": "This is a room for Everyone",
+        "messages": {
+          "messageUid": {
+            "id": "messageUid"
+              "user": "user1",
+              "text": "hey",
+              "date": "1234567890"
+          }, 
+          "messageUid": {
+            "id": "messageUid",
+              "user": "user2",
+              "text": "yo",
+              "date": "1234567890"
+          }
+        }
+      }
+    }
+  }
 }

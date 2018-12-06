@@ -12,7 +12,7 @@ export const CommentBox = ({userName, text, onTextChange, onButtonClick}) => (
       name='text'
       placeholder="comment"
       value={text}
-     onChange={onTextChange}
+      onChange={onTextChange}
     />
     <button onClick={onButtonClick}>Comment</button>
   </div>

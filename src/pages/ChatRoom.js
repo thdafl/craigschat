@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { firebaseDb } from '../config/firebase.js'
 import { CommentBox } from '../components/CommentBox';
-
-const messagesRef = firebaseDb.ref('messages')
+import { Link } from 'react-router-dom';
 
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      text : "",
       userName: "",
+      text : "",
       messages : []
     }
 
@@ -19,11 +18,14 @@ class ChatRoom extends Component {
   }
 
   componentWillMount() {
-    messagesRef.on('child_added', (snapshot) => {
+    const chatRoomId = this.props.match.params.id;
+
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
       const m = snapshot.val()
       let msgs = this.state.messages
 
       msgs.push({
+        id: m.id,
         text : m.text,
         userName : m.userName,
       })
@@ -47,14 +49,19 @@ class ChatRoom extends Component {
   }
 
   onButtonClick() {
+    const chatRoomId = this.props.match.params.id;
+
     if(this.state.userName === "") {
-      alert('userName empty')
+      alert('Please add username!')
       return
     } else if(this.state.text === "") {
-      alert('text empty')
+      alert('Please add comment!')
       return
     }
-    messagesRef.push({
+
+    const key = firebaseDb.ref('chatrooms/').push().key;
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
+      "id": key,
       "userName" : this.state.userName,
       "text" : this.state.text,
     })
@@ -65,9 +72,9 @@ class ChatRoom extends Component {
   render() {
     return (
       <div className="App">
-       <h1>Chat</h1>
+        <h1>Chat</h1>
         <div className="MessageList">
-          {this.state.messages.map((m, i) => <h2>@{m.userName} {m.text}</h2>)}
+          {this.state.messages.map((m, i) => <h2 key={i}>@{m.userName} {m.text}</h2>)}
         </div>
         <CommentBox
           onTextChange={this.onTextChange}
@@ -75,6 +82,7 @@ class ChatRoom extends Component {
           userName={this.state.userName}
           text={this.state.text}
         />
+        <Link to="/">Back to Home</Link>
       </div>
     );
   }
