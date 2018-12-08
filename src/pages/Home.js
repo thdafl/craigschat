@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import '../App.css';
-import { firebaseDb } from '../config/firebase.js';
+import { firebaseDb, firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
 import { withRouter } from "react-router-dom";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: "",
       id: "",
       ownerName: "",
       description : "",
@@ -18,7 +19,22 @@ class Home extends Component {
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    firebaseAuth.onAuthStateChanged(user => {
+      this.setState({ user })
+      console.log(user);
+
+      if (user) {
+        firebaseDb.ref('users/' + user.uid).set({
+          "id": user.uid,
+          "name" : user.displayName,
+          "email" : user.email,
+          "photpUrl" : user.photoURL,
+          "provider": user.providerData[0].providerId
+        })
+      }
+    })
+
     firebaseDb.ref('chatrooms').on('child_added', (snapshot) => {
       const ctr = snapshot.val()
       const chatrooms = this.state.chatRooms
@@ -70,11 +86,26 @@ class Home extends Component {
     this.props.history.push(`chatroom/${id}`);
   }
 
+  googleLogin() {
+    firebaseAuth.signInWithRedirect(googleProvider);
+  }
+
+  githubLogin() {
+    firebaseAuth.signInWithRedirect(githubProvider);
+  }
+
+  logout() {
+    firebaseAuth.signOut()
+  }
+
   render() {
     return (
       <div className="App">
         <div>
-          <h3>Welcome to CraigsChat!</h3>
+          {this.state.user ? null : <button onClick={this.googleLogin}>Google Login</button>}
+          {this.state.user ? null : <button onClick={this.githubLogin}>Github Login</button>}
+          {this.state.user ? <button onClick={this.logout}>Logout</button> : null}
+          <h3>Welcome to CraigsChat {this.state.user ? this.state.user.displayName : null}!</h3>
         </div>
 
          <div style={{marginBottom: '20px'}}>
