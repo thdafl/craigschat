@@ -4,6 +4,10 @@ import '../App.css';
 import { firebaseDb, firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
 import { userLogin, userLogout } from '../store/users/actions';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 
 class Home extends Component {
   constructor(props) {
@@ -122,11 +126,31 @@ class Home extends Component {
     console.log("#", this.state.user)
     return (
       <div className="App">
-        <div>
-          {this.state.user ? null : <button onClick={this.googleLogin}>Google Login</button>}
-          {this.state.user ? null : <button onClick={this.githubLogin}>Github Login</button>}
-          {this.state.user ? <button onClick={this.logout}>Logout</button> : null}
-          <h3>Welcome to CraigsChat {this.state.user ? this.state.user.name : null}!</h3>
+        <AppBar position="sticky" color="default">
+          <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <Typography variant="h6" color="inherit">
+                Title Placeholder
+              </Typography>
+              <h3 style={{paddingLeft: 10}}>{this.state.user ? `Welcome ${this.state.user.name}!` : null}</h3>
+            </div>
+            <div>
+              {this.state.user ? null : <button onClick={this.googleLogin}>Google Login</button>}
+              {this.state.user ? null : <button onClick={this.githubLogin}>Github Login</button>}
+              {this.state.user ? <button onClick={this.logout}>Logout</button> : null}
+            </div>
+          </Toolbar>
+        </AppBar>
+
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 20}}>
+          {this.state.chatRooms.map((chat, id) => {
+            return (
+              <Paper key={id} style={{marginBottom: '20px', paddingBottom: '15px', width: '30%'}}>
+                <h4>@{chat.ownerName} - {chat.description}</h4>
+                <button onClick={() => this.onGoToChatButtonClick(chat.id)}>Join this Chatroom</button>
+              </Paper>
+            )
+          })}
         </div>
 
          <div style={{marginBottom: '20px'}}>
@@ -143,17 +167,6 @@ class Home extends Component {
             onChange={this.onTextChange}
           />
           <button onClick={this.onButtonClick}>Add ChatRoom</button>
-        </div>
-
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-          {this.state.chatRooms.map((chat, id) => {
-            return (
-              <div key={id} style={{marginBottom: '20px', paddingBottom: '15px', width: '50%'}}>
-                <h2>@{chat.ownerName} - {chat.description}</h2>
-                <button onClick={() => this.onGoToChatButtonClick(chat.id)}>Join this Chatroom</button>
-              </div>
-            )
-          })}
         </div>
       </div>
     );
