@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
+import RedioIcon from '@material-ui/icons/Radio';
 
 class Header extends Component {
   googleLogin() {
@@ -20,11 +21,9 @@ class Header extends Component {
   render() {
     return (
       <AppBar position="fixed" color="default">
-      <Toolbar style={{display: 'flex', justifyContent: 'space-between', paddingLeft: '5rem', paddingRight: '5rem'}}>
+      <Toolbar style={{display: 'flex', justifyContent: 'space-between', paddingLeft: '8rem', paddingRight: '8rem'}}>
         <div style={{display: 'flex', alignItems: 'center'}}>
-          <Typography variant="h6" color="inherit">
-            Title Placeholder
-          </Typography>
+          <RedioIcon style={{fontSize: 30}}/>
           <h3 style={{paddingLeft: 10}}>{this.props.user ? `Welcome ${this.props.user.name}!` : null}</h3>
         </div>
         <div>
