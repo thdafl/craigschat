@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Home from './pages/Home';
-import ChatRoom from './pages/ChatRoom';
+import Home from './containers/Home';
+import ChatRoom from './containers/ChatRoom';
 import './App.css';
 
 class App extends Component {

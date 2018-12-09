@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import '../App.css';
 import { firebaseDb, firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
-import { withRouter } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
+import { userLogin, userLogout } from '../store/users/actions';
 
 class Home extends Component {
   constructor(props) {
@@ -17,21 +19,39 @@ class Home extends Component {
     this.onTextChange = this.onTextChange.bind(this);
     this.onButtonClick = this.onButtonClick.bind(this);
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
+    this.googleLogin = this.googleLogin.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     firebaseAuth.onAuthStateChanged(user => {
-      this.setState({ user })
-      console.log(user);
-
       if (user) {
-        firebaseDb.ref('users/' + user.uid).set({
-          "id": user.uid,
-          "name" : user.displayName,
-          "email" : user.email,
-          "photpUrl" : user.photoURL,
-          "provider": user.providerData[0].providerId
+        firebaseDb.ref('users/' + user.uid).on('value', (snapshot) => {
+          if (snapshot.exists()) {
+            const user = snapshot.val()
+            this.props.login(user);
+            this.setState({ user })
+          } else {
+            firebaseDb.ref('users/' + user.uid).set({
+              "id": user.uid,
+              "name" : user.displayName,
+              "email" : user.email,
+              "photpUrl" : user.photoURL,
+              "provider": user.providerData[0].providerId
+            })
+            this.props.login(user);
+            this.setState({ user: {
+              "id": user.uid,
+              "name" : user.displayName,
+              "email" : user.email,
+              "photpUrl" : user.photoURL,
+              "provider": user.providerData[0].providerId
+              }
+            })
+          }
         })
+      } else {
+        this.props.logout();
+        this.setState({ user: "" })
       }
     })
 
@@ -99,13 +119,14 @@ class Home extends Component {
   }
 
   render() {
+    console.log("#", this.state.user)
     return (
       <div className="App">
         <div>
           {this.state.user ? null : <button onClick={this.googleLogin}>Google Login</button>}
           {this.state.user ? null : <button onClick={this.githubLogin}>Github Login</button>}
           {this.state.user ? <button onClick={this.logout}>Logout</button> : null}
-          <h3>Welcome to CraigsChat {this.state.user ? this.state.user.displayName : null}!</h3>
+          <h3>Welcome to CraigsChat {this.state.user ? this.state.user.name : null}!</h3>
         </div>
 
          <div style={{marginBottom: '20px'}}>
@@ -139,4 +160,13 @@ class Home extends Component {
   }
 }
 
-export default withRouter(Home);
+const mapStateToProps = (state) => ({
+  user: state.users
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  login: (user) => dispatch(userLogin(user)),
+  logout: () => dispatch(userLogout())
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
