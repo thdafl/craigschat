@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { firebaseDb } from '../config/firebase.js'
-import { CommentBox } from '../components/CommentBox';
+import { firebaseDb, firebaseAuth } from '../config/firebase.js';
+import { userLogin, userLogout } from '../store/users/actions';
+import TextField from '@material-ui/core/TextField';
+import Header from './Header';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 class ChatRoom extends Component {
@@ -8,7 +11,6 @@ class ChatRoom extends Component {
     super(props);
 
     this.state = {
-      userName: "",
       text : "",
       messages : []
     }
@@ -18,8 +20,20 @@ class ChatRoom extends Component {
   }
 
   componentWillMount() {
-    const chatRoomId = this.props.match.params.id;
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        firebaseDb.ref('users/' + user.uid).on('value', (snapshot) => {
+          if (snapshot.exists()) {
+            const user = snapshot.val()
+            this.props.login(user);
+          } else {
+            this.props.logout();
+          }
+        })
+      }
+    })
 
+    const chatRoomId = this.props.match.params.id;
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
       const m = snapshot.val()
       let msgs = this.state.messages
@@ -37,24 +51,16 @@ class ChatRoom extends Component {
   }
 
   onTextChange(e) {
-    if(e.target.name === 'userName') {
-      this.setState({
-        userName : e.target.value,
-      });
-    } else if (e.target.name === 'text') {
-      this.setState({
-        text : e.target.value,
-      });
-    }
+    this.setState({
+      text : e.target.value,
+    });
   }
 
-  onButtonClick() {
+  onButtonClick(e) {
+    e.preventDefault();
     const chatRoomId = this.props.match.params.id;
 
-    if(this.state.userName === "") {
-      alert('Please add username!')
-      return
-    } else if(this.state.text === "") {
+    if (this.state.text === "") {
       alert('Please add comment!')
       return
     }
@@ -62,7 +68,7 @@ class ChatRoom extends Component {
     const key = firebaseDb.ref('chatrooms/').push().key;
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
       "id": key,
-      "userName" : this.state.userName,
+      "userName" : (this.props.user) ? this.props.user.name : "Guest",
       "text" : this.state.text,
     })
 
@@ -70,22 +76,36 @@ class ChatRoom extends Component {
   }
 
   render() {
+    console.log("@@@", this.props.user)
     return (
-      <div className="App">
-        <h1>Chat</h1>
+      <div className="App" style={{paddingTop: 100}}>
+        <Header user={this.props.user} />
         <div className="MessageList">
           {this.state.messages.map((m, i) => <h2 key={i}>@{m.userName} {m.text}</h2>)}
         </div>
-        <CommentBox
-          onTextChange={this.onTextChange}
-          onButtonClick={this.onButtonClick}
-          userName={this.state.userName}
-          text={this.state.text}
-        />
+
+        <form onSubmit={this.onButtonClick}>
+          <TextField
+            id="comment-box"
+            margin="normal"
+            variant="outlined"
+            onChange={this.onTextChange}
+            value={this.state.text}
+          />
+        </form>
         <Link to="/">Back to Home</Link>
       </div>
     );
   }
 }
 
-export default ChatRoom;
+const mapStateToProps = (state) => ({
+  user: state.users.loginUser
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  login: (user) => dispatch(userLogin(user)),
+  logout: () => dispatch(userLogout())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);
