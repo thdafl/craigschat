@@ -5,7 +5,9 @@ import { firebaseDb, firebaseAuth } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
 import { userLogin, userLogout } from '../store/users/actions';
 import Header from './Header';
+import ListCard from '../components/ListCard';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
 class Home extends Component {
   constructor(props) {
@@ -63,7 +65,7 @@ class Home extends Component {
 
       chatrooms.push({
         id: ctr.id,
-        ownerName : ctr.ownerName,
+        owner : ctr.owner,
         description : ctr.description,
       })
 
@@ -90,7 +92,7 @@ class Home extends Component {
     const key = firebaseDb.ref('chatrooms').push().key;
     firebaseDb.ref('chatrooms/' + key).set({
       "id": key,
-      "ownerName" : this.props.user.loginUser.name,
+      "owner" : this.props.user.loginUser,
       "description" : this.state.description,
     })
 
@@ -102,33 +104,43 @@ class Home extends Component {
   }
 
   render() {
-    console.log("#", this.props.user)
     return (
-      <div className="App">
-        <Header 
-          user={this.state.user}
-        />
+      <div className="App" style={{display: 'flex', justifyContent: 'center', height: '100%', paddingLeft: '5%', paddingRight: '5%'}}>
+        <Header user={this.state.user} />
 
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 100}}>
-          {this.state.chatRooms.map((chat, id) => {
-            return (
-              <Paper key={id} style={{marginBottom: '20px', paddingBottom: '15px', width: '30%'}}>
-                <h4>@{chat.ownerName} - {chat.description}</h4>
-                <button onClick={() => this.onGoToChatButtonClick(chat.id)}>Join this Chatroom</button>
-              </Paper>
-            )
-          })}
+        <div style={{width: '100%', paddingTop: 80}}>
+          <Grid container> 
+            <Grid item xs={12} sm={12} md={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>       
+              {this.state.chatRooms.map((chatroom, id) => {
+                console.log("00000", chatroom)
+                return (
+                  <ListCard
+                    key={id}
+                    onClick={() => this.onGoToChatButtonClick(chatroom.id)}
+                    owner={chatroom.owner}
+                    description={chatroom.description}
+                  />
+                )
+              })}
+
+              {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
+                <textarea
+                  name='description'
+                  placeholder="Description"
+                  value={this.state.description}
+                  onChange={this.onTextChange}
+                />
+                <button onClick={this.onButtonClick}>Add ChatRoom</button>
+              </div> : null}
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={4} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <Paper style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 100}}></Paper>
+              <Paper style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 300}}></Paper>
+            </Grid>
+
+          </Grid>
         </div>
-
-        {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
-          <textarea
-              name='description'
-              placeholder="Description"
-              value={this.state.description}
-              onChange={this.onTextChange}
-            />
-            <button onClick={this.onButtonClick}>Add ChatRoom</button>
-        </div> : null}
       </div>
     );
   }

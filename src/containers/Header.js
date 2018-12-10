@@ -123,8 +123,6 @@ class Header extends Component {
         </div>
 
         <div style={{display: 'flex'}}>
-         
-
           {this.renderButtons()}
         </div>
       </Toolbar>

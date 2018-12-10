@@ -11,6 +11,10 @@ body {
   background-color: #eeeeee;
 }
 
+#root {
+  height: 100%;
+}
+
 .App-link {
   color: #61dafb;
 }
