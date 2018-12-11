@@ -12,6 +12,7 @@
 /build
 
 #firebase config
+/.firebase
 src/config/config.js
 .firebaserc
 database.rules.json

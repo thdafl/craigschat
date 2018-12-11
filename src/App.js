@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import ReactGA from 'react-ga';
 import { Route, Switch } from 'react-router-dom';
 import Home from './containers/Home';
 import ChatRoom from './containers/ChatRoom';
 import './App.css';
+
+ReactGA.initialize('UA-130530759-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 class App extends Component {
   render() {

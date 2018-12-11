@@ -52,6 +52,10 @@ class ChatRoom extends Component {
     })
   }
 
+  componentDidMount() {
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
+  }
+
   componentDidUpdate() {
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
   }
@@ -100,7 +104,7 @@ class ChatRoom extends Component {
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'bisque'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
               {this.state.messages.map((m, i) =>
-                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start'}}>
+                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start', margin: '10px'}}>
                   @{m.userName} {m.text}
                 </div>
               )}
