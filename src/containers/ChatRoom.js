@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { firebaseDb, firebaseAuth } from '../config/firebase.js';
 import { userLogin, userLogout } from '../store/users/actions';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Hidden from '@material-ui/core/Hidden';
 import Header from './Header';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -50,6 +52,10 @@ class ChatRoom extends Component {
     })
   }
 
+  componentDidUpdate() {
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
+  }
+
   onTextChange(e) {
     this.setState({
       text : e.target.value,
@@ -76,24 +82,50 @@ class ChatRoom extends Component {
   }
 
   render() {
-    console.log("@@@", this.props.user)
     return (
-      <div className="App" style={{paddingTop: 100}}>
+      <div className="App" style={{height: '100%'}}>
         <Header user={this.props.user} />
-        <div className="MessageList">
-          {this.state.messages.map((m, i) => <h2 key={i}>@{m.userName} {m.text}</h2>)}
-        </div>
 
-        <form onSubmit={this.onButtonClick}>
-          <TextField
-            id="comment-box"
-            margin="normal"
-            variant="outlined"
-            onChange={this.onTextChange}
-            value={this.state.text}
-          />
-        </form>
-        <Link to="/">Back to Home</Link>
+        <Grid container style={{height: '100%', position: 'fixed'}}> 
+          
+          <Hidden xsDown>
+            <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'cornsilk'}}>
+              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>
+                left
+                <Link to="/">Back to Home</Link>
+              </div>
+            </Grid>
+          </Hidden>
+
+          <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'bisque'}}>
+            <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
+              {this.state.messages.map((m, i) =>
+                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start'}}>
+                  @{m.userName} {m.text}
+                </div>
+              )}
+            </div>
+            <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
+              <TextField
+                id="comment-box"
+                margin="normal"
+                variant="outlined"
+                onChange={this.onTextChange}
+                value={this.state.text}
+                style={{width: '100%'}}
+              />
+            </form>
+          </Grid>
+
+          <Hidden smDown>
+            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'mistyrose'}}>
+              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
+                right
+              </div>
+            </Grid>
+          </Hidden>
+        </Grid>
+       
       </div>
     );
   }

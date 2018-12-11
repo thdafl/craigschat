@@ -112,7 +112,6 @@ class Home extends Component {
           <Grid container> 
             <Grid item xs={12} sm={12} md={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>       
               {this.state.chatRooms.map((chatroom, id) => {
-                console.log("00000", chatroom)
                 return (
                   <ListCard
                     key={id}

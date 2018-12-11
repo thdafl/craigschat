@@ -3,7 +3,7 @@ import { firebaseAuth, googleProvider, githubProvider } from '../config/firebase
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withRouter } from 'react-router-dom';
-import RedioIcon from '@material-ui/icons/Radio';
+import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
@@ -114,12 +114,11 @@ class Header extends Component {
   }
 
   render() {
-    console.log("***", this.props.user)
     return (
       <AppBar position="fixed" color="default">
-      <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between', paddingLeft: '8rem', paddingRight: '8rem'}}>
+      <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
         <div style={{display: 'flex', alignItems: 'center'}}>
-          <RedioIcon style={{fontSize: 30}}/>
+          NoNameYet
         </div>
 
         <div style={{display: 'flex'}}>
@@ -131,4 +130,16 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header);
+const styles = theme => ({
+  toolbar: {
+    // padding: theme.spacing.unit,
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: '1rem', paddingRight: '1rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+      paddingLeft: '8rem', paddingRight: '8rem'
+    },
+  },
+});
+
+export default withRouter(withStyles(styles)(Header));
