@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import '../App.css';
 import { firebaseDb, firebaseAuth } from '../config/firebase.js';
@@ -19,8 +20,6 @@ class Home extends Component {
       chatRooms: []
     }
 
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onButtonClick = this.onButtonClick.bind(this);
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
   }
 
@@ -75,30 +74,6 @@ class Home extends Component {
     })
   }
 
-  onTextChange(e) {
-    if (e.target.name === 'description') {
-      this.setState({
-        description : e.target.value,
-      });
-    }
-  }
-
-  onButtonClick() {
-    if (this.state.description === "") {
-      alert('Please enter some description')
-      return
-    }
-
-    const key = firebaseDb.ref('chatrooms').push().key;
-    firebaseDb.ref('chatrooms/' + key).set({
-      "id": key,
-      "owner" : this.props.user.loginUser,
-      "description" : this.state.description,
-    })
-
-    this.setState({key: "", ownerName: "", description: ""})
-  }
-
   onGoToChatButtonClick(id) {
     this.props.history.push(`chatroom/${id}`);
   }
@@ -122,14 +97,10 @@ class Home extends Component {
                 )
               })}
 
+              
+
               {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
-                <textarea
-                  name='description'
-                  placeholder="Description"
-                  value={this.state.description}
-                  onChange={this.onTextChange}
-                />
-                <button onClick={this.onButtonClick}>Add ChatRoom</button>
+                <Link to="/new/chatroom"></Link>
               </div> : null}
             </Grid>
 
