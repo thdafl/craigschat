@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Hidden from '@material-ui/core/Hidden';
 import Header from './Header';
+import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -44,7 +45,7 @@ class ChatRoom extends Component {
       msgs.push({
         id: m.id,
         text : m.text,
-        userName : m.userName,
+        user : m.user,
         timestamp : m.timestamp
       })
 
@@ -78,9 +79,14 @@ class ChatRoom extends Component {
     }
 
     const key = firebaseDb.ref('chatrooms/').push().key;
+    const guest = {
+      name: "Guest",
+      photpUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
+    }
+
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
       "id": key,
-      "userName" : (this.props.user) ? this.props.user.name : "Guest",
+      "user" : (this.props.user) ? this.props.user : guest,
       "text" : this.state.text,
       "timestamp": moment().format("MMMM Do YYYY, h:mm:ss a")
     })
@@ -106,9 +112,12 @@ class ChatRoom extends Component {
 
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'bisque'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) =>
-                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start', margin: '10px'}}>
-                  <div style={{paddingRight: '10px'}}>@{m.userName}</div>
+              {this.state.messages.map((m, i) => 
+                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'center', margin: '10px'}}>
+                  <div style={{display: 'flex', paddingRight: '10px'}}>
+                    <Avatar style={{width: '30px', height: '30px', marginRight: '10px'}} alt="user-avator" src={m.user.photpUrl} />
+                    <div style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: '10px'}}>@{m.user.name}</div>
+                  </div>
                   <div style={{textAlign: 'left', paddingRight: '10px'}}>{m.text}</div>
                   <div style={{color: 'gray', fontSize: '5px'}}>{m.timestamp}</div>
                 </div>
