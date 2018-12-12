@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { firebaseDb, firebaseAuth } from '../config/firebase.js';
 import { userLogin, userLogout } from '../store/users/actions';
 import Grid from '@material-ui/core/Grid';
@@ -44,6 +45,7 @@ class ChatRoom extends Component {
         id: m.id,
         text : m.text,
         userName : m.userName,
+        timestamp : m.timestamp
       })
 
       this.setState({
@@ -80,6 +82,7 @@ class ChatRoom extends Component {
       "id": key,
       "userName" : (this.props.user) ? this.props.user.name : "Guest",
       "text" : this.state.text,
+      "timestamp": moment().format("MMMM Do YYYY, h:mm:ss a")
     })
 
     this.setState({userName: "", text: ""})
@@ -105,7 +108,9 @@ class ChatRoom extends Component {
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
               {this.state.messages.map((m, i) =>
                 <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start', margin: '10px'}}>
-                  @{m.userName} {m.text}
+                  <div style={{paddingRight: '10px'}}>@{m.userName}</div>
+                  <div style={{textAlign: 'left', paddingRight: '10px'}}>{m.text}</div>
+                  <div style={{color: 'gray', fontSize: '5px'}}>{m.timestamp}</div>
                 </div>
               )}
             </div>
