@@ -6,9 +6,10 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Hidden from '@material-ui/core/Hidden';
 import Header from './Header';
-import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+import MessageBubble from '../components/MessageBubble'
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -125,16 +126,7 @@ class ChatRoom extends Component {
 
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) => 
-                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'center', margin: '10px'}}>
-                  <div style={{display: 'flex', marginRight: '10px', width: '15%'}}>
-                    <Avatar style={{width: '30px', height: '30px', marginRight: '10px'}} alt="user-avator" src={m.user.photpUrl} />
-                    <div style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: '10px'}}>@{m.user.name}</div>
-                  </div>
-                  <div style={{textAlign: 'left', paddingRight: '10px', width: '75%', fontSize: '20px'}}>{m.text}</div>
-                  <div style={{color: 'gray', fontSize: '5px', width: '10%'}}>{m.timestamp}</div>
-                </div>
-              )}
+              {this.state.messages.map((m, i) => <MessageBubble key={i} ref={(el) => { this.messagesEnd = el; }} message={m}/>)}
             </div>
             <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
               <TextField
