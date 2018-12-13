@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Hidden from '@material-ui/core/Hidden';
 import Header from './Header';
+import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -15,7 +16,8 @@ class ChatRoom extends Component {
 
     this.state = {
       text : "",
-      messages : []
+      messages : [],
+      initialMessagesLength: null
     }
 
     this.onTextChange = this.onTextChange.bind(this);
@@ -37,6 +39,10 @@ class ChatRoom extends Component {
     })
 
     const chatRoomId = this.props.match.params.id;
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
+      this.setState({ initialMessagesLength: snapshot.numChildren()})     
+    })
+
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
       const m = snapshot.val()
       let msgs = this.state.messages
@@ -44,7 +50,7 @@ class ChatRoom extends Component {
       msgs.push({
         id: m.id,
         text : m.text,
-        userName : m.userName,
+        user : m.user,
         timestamp : m.timestamp
       })
 
@@ -55,11 +61,19 @@ class ChatRoom extends Component {
   }
 
   componentDidMount() {
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView();
   }
 
   componentDidUpdate() {
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
+    
+    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {  
+      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
+      const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
+      if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) audio.play();
+    } else if (this.state.initialMessagesLength === 0) {
+      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
+    }
   }
 
   onTextChange(e) {
@@ -78,11 +92,16 @@ class ChatRoom extends Component {
     }
 
     const key = firebaseDb.ref('chatrooms/').push().key;
+    const guest = {
+      name: "Guest",
+      photpUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
+    }
+
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
       "id": key,
-      "userName" : (this.props.user) ? this.props.user.name : "Guest",
+      "user" : (this.props.user) ? this.props.user : guest,
       "text" : this.state.text,
-      "timestamp": moment().format("MMMM Do YYYY, h:mm:ss a")
+      "timestamp": moment().format("MMMM Do YYYY, h:mm a")
     })
 
     this.setState({userName: "", text: ""})
@@ -96,7 +115,7 @@ class ChatRoom extends Component {
         <Grid container style={{height: '100%', position: 'fixed'}}> 
           
           <Hidden xsDown>
-            <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'cornsilk'}}>
+            <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>
                 left
                 <Link to="/">Back to Home</Link>
@@ -104,13 +123,16 @@ class ChatRoom extends Component {
             </Grid>
           </Hidden>
 
-          <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'bisque'}}>
+          <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) =>
-                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'flex-start', margin: '10px'}}>
-                  <div style={{paddingRight: '10px'}}>@{m.userName}</div>
-                  <div style={{textAlign: 'left', paddingRight: '10px'}}>{m.text}</div>
-                  <div style={{color: 'gray', fontSize: '5px'}}>{m.timestamp}</div>
+              {this.state.messages.map((m, i) => 
+                <div ref={(el) => { this.messagesEnd = el; }} key={i} style={{fontSize: '20px', display: 'flex', alignItems: 'center', margin: '10px'}}>
+                  <div style={{display: 'flex', marginRight: '10px', width: '15%'}}>
+                    <Avatar style={{width: '30px', height: '30px', marginRight: '10px'}} alt="user-avator" src={m.user.photpUrl} />
+                    <div style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: '10px'}}>@{m.user.name}</div>
+                  </div>
+                  <div style={{textAlign: 'left', paddingRight: '10px', width: '75%', fontSize: '20px'}}>{m.text}</div>
+                  <div style={{color: 'gray', fontSize: '5px', width: '10%'}}>{m.timestamp}</div>
                 </div>
               )}
             </div>
@@ -127,14 +149,14 @@ class ChatRoom extends Component {
           </Grid>
 
           <Hidden smDown>
-            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'mistyrose'}}>
+            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
                 right
               </div>
             </Grid>
           </Hidden>
         </Grid>
-       
+         
       </div>
     );
   }

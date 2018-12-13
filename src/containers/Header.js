@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
@@ -49,15 +49,6 @@ class Header extends Component {
       return (
         <div>
           <Button
-            variant="outlined"
-            size="small"
-            disableRipple
-            color="secondary"
-            style={{textTransform: 'none', marginRight: 10, fontWeight: 800, border: '2px solid rgba(245, 0, 87, 0.5)'}}
-          >
-            Create a Room
-          </Button>
-          <Button
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.onClickMenuOpen}
@@ -82,15 +73,17 @@ class Header extends Component {
     } else {
       return (
         <div>
-          <Button
-            variant="outlined"
-            size="small"
-            disableRipple
-            color="secondary"
-            style={{textTransform: 'none', marginRight: 10, fontWeight: 800, border: '2px solid rgba(245, 0, 87, 0.5)'}}
-          >
-            Create a Room
-          </Button>
+          <Link to="/new/chatroom">
+            <Button
+              variant="outlined"
+              size="small"
+              disableRipple
+              color="secondary"
+              style={{textTransform: 'none', marginRight: 10, fontWeight: 800, border: '2px solid rgba(245, 0, 87, 0.5)'}}
+            >
+              Create a Room
+            </Button>
+          </Link>
           <Button
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
