@@ -41,7 +41,6 @@ class ChatRoom extends Component {
     const chatRoomId = this.props.match.params.id;
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
       this.setState({ initialMessagesLength: snapshot.numChildren()})     
-      console.log("willmount", snapshot.numChildren())
     })
 
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
@@ -67,12 +66,13 @@ class ChatRoom extends Component {
 
   componentDidUpdate() {
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "smooth"});
-    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {
-      
-    console.log("####", this.state.initialMessagesLength, this.state.messages.length)
-    this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
-    const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
-    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) audio.play();
+    
+    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {  
+      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
+      const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
+      if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) audio.play();
+    } else if (this.state.initialMessagesLength === 0) {
+      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
     }
   }
 

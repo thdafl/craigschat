@@ -48,17 +48,6 @@ class Header extends Component {
     if (!this.props.user) {
       return (
         <div>
-          <Link to="/new/chatroom">
-            <Button
-              variant="outlined"
-              size="small"
-              disableRipple
-              color="secondary"
-              style={{textTransform: 'none', marginRight: 10, fontWeight: 800, border: '2px solid rgba(245, 0, 87, 0.5)'}}
-            >
-              Create a Room
-            </Button>
-          </Link>
           <Button
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
