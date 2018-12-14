@@ -8,41 +8,42 @@ import Chip from '@material-ui/core/Chip';
 
 const ListCard = ({onClick, owner, description}) => {
   return (
-    <Card style={{width: '90%', marginTop: '10px', marginBottom: '10px'}}>
+    <Card style={{width: '100%', marginTop: '10px', marginBottom: '10px'}}>
       <CardActionArea onClick={onClick}>
-        <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: 'lavender', height: '45px'}}>
+        <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: '10px', paddingBottom: '10px'}}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-              <div style={{ display: 'flex', width: '20%', height: '30px', backgroundColor: 'lightsteelblue'}}>
+              <div style={{ display: 'flex', width: '20%'}}>
                 <div style={{paddingRight: '8px'}}>
-                  <Avatar style={{width: '30px', height: '30px'}} alt="user-avator" src={owner.photpUrl} />
+                  <Avatar style={{width: '35px', height: '35px'}} alt="user-avator" src={owner.photpUrl} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                   <Typography style={{fontSize: '13px'}}>{owner.name}</Typography>
                 </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-end', width: '20%', backgroundColor: 'seashell'}}>
-                <Typography style={{fontSize: '10px'}}>Shibuya</Typography>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-end', width: '20%'}}>
+                <Chip style={{fontSize: '7px', height: '20px'}} color="primary" label="Tokyo" />
               </div>
             </div>
 
-            <div style={{backgroundColor: 'gainsboro'}}>
-              <Typography style={{fontSize: '20px', fontWeight: 600, display: 'flex', justifyContent: 'flex-start'}}>{description}</Typography>
+            <div>
+              <Typography style={{fontSize: '22px', fontWeight: 600, display: 'flex', justifyContent: 'flex-start'}}>{description}</Typography>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-start'}}>
+              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Social" />
+              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#International" />
+              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Anyone is welcomed" />
             </div>
           </div>
         </CardContent>
 
-        <CardContent style={{backgroundColor: 'lightcyan', display: 'flex', height: '10px', justifyContent: 'space-between', alignItems: 'center'}}>
+        <CardContent style={{display: 'flex', paddingTop: '10px', paddingBottom: '10px', justifyContent: 'space-between', alignItems: 'center'}}>
           <div style={{display: 'flex'}}>
             <Avatar style={{width: '25px', height: '25px'}} alt="user-avator" src="https://image.flaticon.com/icons/svg/145/145848.svg" />
             <Avatar style={{width: '25px', height: '25px'}} alt="user-avator" src="https://image.flaticon.com/icons/svg/145/145842.svg" />
             <Avatar style={{width: '25px', height: '25px'}} alt="user-avator" src="https://image.flaticon.com/icons/svg/145/145849.svg" />
             <Avatar style={{width: '25px', height: '25px'}} alt="user-avator" src="https://image.flaticon.com/icons/svg/145/145846.svg" />
-          </div>
-          <div>
-            <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Social" />
-            <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#International" />
-            <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Anyone is welcomed" />
           </div>
         </CardContent>
       </CardActionArea>
