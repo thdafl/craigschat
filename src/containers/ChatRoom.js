@@ -18,6 +18,7 @@ class ChatRoom extends Component {
     this.state = {
       text : "",
       messages : [],
+      currentRoomMembers: null,
       initialMessagesLength: null
     }
 
@@ -58,6 +59,11 @@ class ChatRoom extends Component {
       this.setState({
         messages : msgs
       });
+    })
+    
+    // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').once('value', (snapshot) => { 
+      this.setState({currentRoomMembers: snapshot.val()})     
     })
   }
 
@@ -104,6 +110,22 @@ class ChatRoom extends Component {
       "text" : this.state.text,
       "timestamp": moment().format("MMMM Do YYYY, h:mm a")
     })
+
+    const crm = this.state.currentRoomMembers;
+
+    // if currentRoomMembers is null, save the user to the db
+    if (!crm) {
+      firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/' + this.props.user.id).set(this.props.user)
+    } else {
+      // if the user is guest, do nothing
+      if (!this.props.user) {
+        console.log("guest user!")
+      // if the user is NOT existed in currentRoomMembers stets, add the user to the db
+      } else if (this.props.user.id in crm === false) {
+        console.log("user NOT existed!")
+        firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/' + this.props.user.id).set(this.props.user)
+      } 
+    }
 
     this.setState({userName: "", text: ""})
   }

@@ -67,6 +67,7 @@ class Home extends Component {
         id: ctr.id,
         owner : ctr.owner,
         description : ctr.description,
+        roommembers: ctr.roommembers
       })
 
       this.setState({
@@ -101,6 +102,7 @@ class Home extends Component {
                     onClick={() => this.onGoToChatButtonClick(chatroom.id)}
                     owner={chatroom.owner}
                     description={chatroom.description}
+                    roommembers={chatroom.roommembers}
                   />
                 )
               })}
