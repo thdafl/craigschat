@@ -52,10 +52,9 @@ class Header extends Component {
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.onClickMenuOpen}
-            variant="outlined"
             size="small"
             disableRipple
-            style={{textTransform: 'none', fontWeight: 800, border: '2px solid rgba(0, 18 ,31 ,0.7)', color: 'rgba(0, 18 ,31 ,0.7)'}}
+            // style={{textTransform: 'none', fontWeight: 800, border: '2px solid rgba(0, 18 ,31 ,0.7)', color: 'rgba(0, 18 ,31 ,0.7)'}}
           >
             Signin / Login
           </Button>
@@ -73,13 +72,13 @@ class Header extends Component {
     } else {
       return (
         <div>
-          <Link to="/new/chatroom">
+          <Link to="/new/chatroom" style={{textDecoration: 'none'}}>
             <Button
-              variant="outlined"
+              variant="contained"
               size="small"
               disableRipple
               color="secondary"
-              style={{textTransform: 'none', marginRight: 10, fontWeight: 800, border: '2px solid rgba(245, 0, 87, 0.5)'}}
+              style={{marginRight: 5, fontWeight: 800}}
             >
               Create a Room
             </Button>
@@ -88,10 +87,9 @@ class Header extends Component {
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.logout}
-            variant="outlined"
             size="small"
             disableRipple
-            style={{textTransform: 'none', marginRight: 15, fontWeight: 800, border: '2px solid rgba(0, 18 ,31 ,0.7)', color: 'rgba(0, 18 ,31 ,0.7)'}}
+            style={{marginRight: 5, fontWeight: 500}}
           >
             Logout
           </Button>
