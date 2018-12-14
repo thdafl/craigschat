@@ -107,16 +107,16 @@ class Header extends Component {
   render() {
     return (
       <AppBar position="fixed" color="default">
-      <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
-        <div style={{display: 'flex', alignItems: 'center'}}>
-          NoNameYet
-        </div>
+        <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            NoNameYet
+          </div>
 
-        <div style={{display: 'flex'}}>
-          {this.renderButtons()}
-        </div>
-      </Toolbar>
-    </AppBar>
+          <div style={{display: 'flex'}}>
+            {this.renderButtons()}
+          </div>
+        </Toolbar>
+      </AppBar>
     )
   }
 }

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { firebaseDb, firebaseAuth } from '../config/firebase.js';
-import { userLogin, userLogout } from '../store/users/actions';
+import { firebaseDb } from '../config/firebase.js';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Hidden from '@material-ui/core/Hidden';
-import Header from './Header';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import MessageBubble from '../components/MessageBubble'
 
@@ -25,21 +23,8 @@ class ChatRoom extends Component {
     this.onButtonClick = this.onButtonClick.bind(this);
   }
 
-  componentWillMount() {
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDb.ref('users/' + user.uid).on('value', (snapshot) => {
-          if (snapshot.exists()) {
-            const user = snapshot.val()
-            this.props.login(user);
-          } else {
-            this.props.logout();
-          }
-        })
-      }
-    })
-
-    const chatRoomId = this.props.match.params.id;
+  componentDidMount() {
+    const {id: chatRoomId} = this.props.match.params;
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
       this.setState({ initialMessagesLength: snapshot.numChildren()})     
     })
@@ -59,9 +44,7 @@ class ChatRoom extends Component {
         messages : msgs
       });
     })
-  }
 
-  componentDidMount() {
     if (this.messagesEnd) this.messagesEnd.scrollIntoView();
   }
 
@@ -110,48 +93,43 @@ class ChatRoom extends Component {
 
   render() {
     return (
-      <div className="App" style={{height: '100%'}}>
-        <Header user={this.props.user} />
-
-        <Grid container style={{height: '100%', position: 'fixed'}}> 
-          
-          <Hidden xsDown>
-            <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>
-                left
-                <Link to="/">Back to Home</Link>
-              </div>
-            </Grid>
-          </Hidden>
-
-          <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) => 
-                <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
-              )}
+      <Grid container style={{height: '100%'}}> 
+        
+        <Hidden xsDown>
+          <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>
+              left
+              <Link to="/">Back to Home</Link>
             </div>
-            <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
-              <TextField
-                id="comment-box"
-                margin="normal"
-                variant="outlined"
-                onChange={this.onTextChange}
-                value={this.state.text}
-                style={{width: '100%'}}
-              />
-            </form>
           </Grid>
+        </Hidden>
 
-          <Hidden smDown>
-            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
-                right
-              </div>
-            </Grid>
-          </Hidden>
+        <Grid item xs={12} sm={10} md={7} lg={7} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+          <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
+            {this.state.messages.map((m, i) => 
+              <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
+            )}
+          </div>
+          <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
+            <TextField
+              id="comment-box"
+              margin="normal"
+              variant="outlined"
+              onChange={this.onTextChange}
+              value={this.state.text}
+              style={{width: '100%'}}
+            />
+          </form>
         </Grid>
-         
-      </div>
+
+        <Hidden smDown>
+          <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
+              right
+            </div>
+          </Grid>
+        </Hidden>
+      </Grid>
     );
   }
 }
@@ -161,8 +139,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (user) => dispatch(userLogin(user)),
-  logout: () => dispatch(userLogout())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);

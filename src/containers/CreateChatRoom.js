@@ -1,28 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 
-import { firebaseDb, firebaseAuth } from '../config/firebase.js';
-import { userLogin, userLogout } from '../store/users/actions';
+import { firebaseDb } from '../config/firebase.js';
 
 class CreateChatRoom extends Component {
   state = {
     description: ''
   }
 
-  componentWillMount() {
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDb.ref('users/' + user.uid).on('value', (snapshot) => {
-          if (snapshot.exists()) {
-            const user = snapshot.val()
-            this.props.login(user);
-          } else {
-            this.props.logout();
-          }
-        })
-      }
-    })
-
+  componentDidMount() {
     const chatRoomId = this.props.match.params.id;
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
       const m = snapshot.val()
@@ -72,7 +58,7 @@ class CreateChatRoom extends Component {
   
   render() {
     return (
-      <div>
+      <div style={{height: 200, width: 200}}>
         <textarea
           name='description'
           placeholder="Description"
@@ -90,8 +76,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (user) => dispatch(userLogin(user)),
-  logout: () => dispatch(userLogout())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateChatRoom)
