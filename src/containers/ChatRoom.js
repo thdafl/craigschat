@@ -126,7 +126,9 @@ class ChatRoom extends Component {
 
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) => <MessageBubble key={i} ref={(el) => { this.messagesEnd = el; }} message={m}/>)}
+              {this.state.messages.map((m, i) => 
+                <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
+              )}
             </div>
             <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
               <TextField
