@@ -9,6 +9,7 @@ import Header from './Header';
 import ListCard from '../components/ListCard';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 
 class Home extends Component {
   constructor(props) {
@@ -84,8 +85,15 @@ class Home extends Component {
         <Header user={this.state.user} />
 
         <div style={{width: '100%', paddingTop: 80}}>
-          <Grid container> 
-            <Grid item xs={12} sm={12} md={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>       
+          <Grid container>
+            <Hidden mdDown>
+              <Grid item lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 500}}>
+                </Paper>
+              </Grid>
+            </Hidden>
+
+            <Grid item xs={12} sm={12} md={8} lg={6} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>       
               {this.state.chatRooms.map((chatroom, id) => {
                 return (
                   <ListCard
@@ -97,16 +105,14 @@ class Home extends Component {
                 )
               })}
 
-              
-
               {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
                 <Link to="/new/chatroom"></Link>
               </div> : null}
             </Grid>
 
-            <Grid item xs={12} sm={12} md={4} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Paper style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 100}}></Paper>
-              <Paper style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 300}}></Paper>
+            <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 100}}></Paper>
+              <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 300}}></Paper>
             </Grid>
 
           </Grid>
