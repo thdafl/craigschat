@@ -37,7 +37,7 @@ class Home extends Component {
               "id": user.uid,
               "name" : user.displayName,
               "email" : user.email,
-              "photpUrl" : user.photoURL,
+              "photoUrl" : user.photoURL,
               "provider": user.providerData[0].providerId
             })
             this.props.login(user);
@@ -46,7 +46,7 @@ class Home extends Component {
                 "id": user.uid,
                 "name" : user.displayName,
                 "email" : user.email,
-                "photpUrl" : user.photoURL,
+                "photoUrl" : user.photoURL,
                 "provider": user.providerData[0].providerId
                 }
               }

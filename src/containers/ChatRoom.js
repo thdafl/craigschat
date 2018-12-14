@@ -95,7 +95,7 @@ class ChatRoom extends Component {
     const key = firebaseDb.ref('chatrooms/').push().key;
     const guest = {
       name: "Guest",
-      photpUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
+      photoUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
     }
 
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
