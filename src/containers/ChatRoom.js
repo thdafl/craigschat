@@ -102,7 +102,7 @@ class ChatRoom extends Component {
       "id": key,
       "user" : (this.props.user) ? this.props.user : guest,
       "text" : this.state.text,
-      "timestamp": moment().format("MMMM Do YYYY, h:mm a")
+      "timestamp": moment().toISOString()
     })
 
     this.setState({userName: "", text: ""})
