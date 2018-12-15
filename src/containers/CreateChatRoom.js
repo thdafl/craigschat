@@ -52,18 +52,12 @@ class CreateChatRoom extends Component {
     }
 
     const {key} = firebaseDb.ref('chatrooms').push();
-
-    console.log({
-      "id": key,
-      "owner" : this.props.user.loginUser,
-      "description" : this.state.description,
-    })
-    
     firebaseDb.ref('chatrooms/' + key).set({
       "id": key,
       "owner" : this.props.user.loginUser,
       "description" : this.state.description,
     }).then(() => {
+      firebaseDb.ref('chatrooms/' + key + '/roommembers/' + this.props.user.loginUser.id).set(this.props.user.loginUser)
       this.props.history.push(`/chatroom/${key}`)
     })
 

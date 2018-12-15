@@ -37,7 +37,7 @@ class Home extends Component {
               "id": user.uid,
               "name" : user.displayName,
               "email" : user.email,
-              "photpUrl" : user.photoURL,
+              "photoUrl" : user.photoURL,
               "provider": user.providerData[0].providerId
             })
             this.props.login(user);
@@ -46,7 +46,7 @@ class Home extends Component {
                 "id": user.uid,
                 "name" : user.displayName,
                 "email" : user.email,
-                "photpUrl" : user.photoURL,
+                "photoUrl" : user.photoURL,
                 "provider": user.providerData[0].providerId
                 }
               }
@@ -67,6 +67,7 @@ class Home extends Component {
         id: ctr.id,
         owner : ctr.owner,
         description : ctr.description,
+        roommembers: ctr.roommembers
       })
 
       this.setState({
@@ -101,6 +102,7 @@ class Home extends Component {
                     onClick={() => this.onGoToChatButtonClick(chatroom.id)}
                     owner={chatroom.owner}
                     description={chatroom.description}
+                    roommembers={chatroom.roommembers}
                   />
                 )
               })}

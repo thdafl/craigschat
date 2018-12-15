@@ -96,7 +96,7 @@ class Header extends Component {
           <Fab size='small' disableRipple>
             <Avatar 
               alt="user avatar"
-              src={this.props.user.photpUrl}
+              src={this.props.user.photoUrl}
             />
           </Fab>
         </div>
