@@ -7,6 +7,7 @@ import { userLogin, userLogout } from './store/users/actions';
 import Home from './containers/Home';
 import ChatRoom from './containers/ChatRoom';
 import CreateChatRoom from './containers/CreateChatRoom'
+import UserProfile from './containers/UserProfile'
 import Header from './containers/Header'
 import './App.css';
 
@@ -62,6 +63,7 @@ class App extends Component {
         <Header user={this.props.user} />
         <Switch>
           <Route path='/' component={Home} exact={true} />
+          <Route path="/user/:id?" component={UserProfile}/>
           <Route path='/chatroom/:id' component={ChatRoom} />
           <Route path="/new/chatroom" component={CreateChatRoom}/>
         </Switch>
