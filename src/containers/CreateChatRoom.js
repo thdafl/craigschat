@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import ChipInput from 'material-ui-chip-input'
 
 import { firebaseDb } from '../config/firebase.js';
+import { TextField, Card, Button } from '@material-ui/core';
 
 class CreateChatRoom extends Component {
   state = {
-    description: ''
+    title: '',
+    description: '',
+    place: '',
+    tags: [],
   }
 
   componentDidMount() {
@@ -31,17 +36,14 @@ class CreateChatRoom extends Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  onButtonClick = () => {
-    if (this.state.description === "") {
-      alert('Please enter some description')
-      return
-    }
+  onFormSubmit = (e) => {
+    e.preventDefault()
 
     const {key} = firebaseDb.ref('chatrooms').push();
     firebaseDb.ref('chatrooms/' + key).set({
       "id": key,
       "owner" : this.props.user.loginUser,
-      "description" : this.state.description,
+      ...this.state
     }).then(() => {
       firebaseDb.ref('chatrooms/' + key + '/roommembers/' + this.props.user.loginUser.id).set(this.props.user.loginUser)
       this.props.history.push(`/chatroom/${key}`)
@@ -52,14 +54,38 @@ class CreateChatRoom extends Component {
   
   render() {
     return (
-      <div style={{height: 200, width: 200, paddingTop: 80}}>
-        <textarea
-          name='description'
-          placeholder="Description"
-          value={this.state.description}
-          onChange={this.onTextChange}
-        />
-        <button onClick={this.onButtonClick}>Add ChatRoom</button>
+      <div style={{width: '100%', paddingTop: 80}}>
+        <Card style={{margin: 'auto', width: 600, padding: 20}}>
+          <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={this.onFormSubmit}>
+            <TextField
+              name="title"
+              label="Title"
+              value={this.state.title}
+              onChange={this.onTextChange}
+              required
+            />
+            <TextField
+              name="place"
+              label="Place"
+              value={this.state.place}
+              onChange={this.onTextChange}
+            />
+            <TextField
+              name="description"
+              label="Description"
+              value={this.state.description}
+              onChange={this.onTextChange}
+              rows={4}
+              multiline
+              fullWidth
+            />
+            <ChipInput
+              label="Tags"
+              onChange={tags => this.setState({tags})}
+            />
+            <Button color="primary" variant="contained" type="submit">Add ChatRoom</Button>
+          </form>
+        </Card>
       </div>
     )
   }
