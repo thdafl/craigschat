@@ -12,7 +12,7 @@ const ListCard = ({onClick, owner, description, roommembers}) => {
     const rms = [];
     if (roommembers) {
       for (let m in roommembers) {
-        rms.unshift(<Avatar key={m} style={{width: '25px', height: '25px'}} alt={m} src={roommembers[m].photpUrl} />)
+        rms.unshift(<Avatar key={m} style={{width: '25px', height: '25px'}} alt={m} src={roommembers[m].photoUrl} />)
       }
       return rms;
     }
