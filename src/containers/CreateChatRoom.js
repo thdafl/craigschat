@@ -52,7 +52,7 @@ class CreateChatRoom extends Component {
   
   render() {
     return (
-      <div style={{height: 200, width: 200}}>
+      <div style={{height: 200, width: 200, paddingTop: 80}}>
         <textarea
           name='description'
           placeholder="Description"
