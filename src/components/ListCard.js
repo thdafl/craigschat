@@ -26,7 +26,7 @@ const ListCard = ({onClick, owner, description, roommembers}) => {
             <div style={{ display: 'flex', justifyContent: 'space-between'}}>
               <div style={{ display: 'flex', width: '20%'}}>
                 <div style={{paddingRight: '8px'}}>
-                  <Avatar style={{width: '35px', height: '35px'}} alt="user-avator" src={owner.photpUrl} />
+                  <Avatar style={{width: '35px', height: '35px'}} alt="user-avator" src={owner.photoUrl} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                   <Typography style={{fontSize: '13px'}}>{owner.name}</Typography>
