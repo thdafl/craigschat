@@ -30,6 +30,9 @@ class Home extends Component {
       chatrooms.push({
         id: ctr.id,
         owner : ctr.owner,
+        title: ctr.title,
+        tags: ctr.tags,
+        place: ctr.place,
         description : ctr.description,
         roommembers: ctr.roommembers
       })
@@ -62,9 +65,7 @@ class Home extends Component {
                   <ListCard
                     key={id}
                     onClick={() => this.onGoToChatButtonClick(chatroom.id)}
-                    owner={chatroom.owner}
-                    description={chatroom.description}
-                    roommembers={chatroom.roommembers}
+                    {...chatroom}
                   />
                 )
               })}

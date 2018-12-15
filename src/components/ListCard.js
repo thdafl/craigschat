@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 
-const ListCard = ({onClick, owner, description, roommembers}) => {
+const ListCard = ({onClick, owner, title, description, place, tags = [], roommembers}) => {
 
   const renderAvatars = () => {
     const rms = [];
@@ -33,18 +33,18 @@ const ListCard = ({onClick, owner, description, roommembers}) => {
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-end', width: '20%'}}>
-                <Chip style={{fontSize: '7px', height: '20px'}} color="primary" label="Tokyo" />
+                {place && <Chip style={{fontSize: '10px', height: '20px'}} color="primary" label={place} />}
               </div>
             </div>
 
             <div>
-              <Typography style={{fontSize: '22px', fontWeight: 600, display: 'flex', justifyContent: 'flex-start'}}>{description}</Typography>
+              <Typography style={{fontSize: '22px', fontWeight: 600, display: 'flex', justifyContent: 'flex-start'}}>{title || description}</Typography>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-start'}}>
-              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Social" />
-              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#International" />
-              <Chip style={{fontSize: '5px', height: '20px', margin: '3px'}} label="#Anyone is welcomed" />
+              {tags.map(tag => (
+                <Chip style={{fontSize: '10px', height: '20px', margin: '3px'}} label={`#${tag}`} />
+              ))}
             </div>
           </div>
         </CardContent>
