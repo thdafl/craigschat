@@ -3,6 +3,7 @@ import moment from 'moment';
 import { firebaseDb } from '../config/firebase.js';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -16,7 +17,7 @@ class ChatRoom extends Component {
     this.state = {
       text : "",
       messages : [],
-      currentRoomMembers: null,
+      currentRoomMembers: [],
       initialMessagesLength: null
     }
 
@@ -47,8 +48,17 @@ class ChatRoom extends Component {
     })
     
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').once('value', (snapshot) => { 
-      this.setState({currentRoomMembers: snapshot.val()})     
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').on('child_added', (snapshot) => { 
+      const m = snapshot.val() 
+      let crms = this.state.currentRoomMembers
+
+      crms.push({
+        id: m.id,
+        name: m.name,
+        photoUrl: m.photoUrl
+      })
+
+      this.setState({currentRoomMembers: crms})     
     })
 
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
@@ -120,9 +130,15 @@ class ChatRoom extends Component {
           
           <Hidden xsDown>
             <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>
-                left
-                <Link to="/">Back to Home</Link>
+              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '70px', maxWidth: '80%'}}>
+                <div style={{fontWeight: 100, fontSize: '15px', marginBottom: '10px'}}>Room Members</div>
+                {this.state.currentRoomMembers.map((m) => 
+                  <div key={m.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
+                    <Avatar alt="user avatar" src={m.photoUrl} style={{marginRight: '10px'}}/>
+                    <div style={{wordBreak: 'break-all'}}>{m.name}</div>
+                  </div>
+                )}
+                <Link to="/" style={{marginTop: '15px'}}>Back to Home</Link>
               </div>
             </Grid>
           </Hidden>
@@ -148,7 +164,7 @@ class ChatRoom extends Component {
           <Hidden smDown>
             <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
-                right
+                ChatRoom details come here
               </div>
             </Grid>
           </Hidden>

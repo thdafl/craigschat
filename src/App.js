@@ -26,7 +26,7 @@ class App extends Component {
               "id": user.uid,
               "name" : user.displayName,
               "email" : user.email,
-              "photpUrl" : user.photoURL,
+              "photoUrl" : user.photoURL,
               "provider": user.providerData[0].providerId
             })
             this.props.login(user);
@@ -35,7 +35,7 @@ class App extends Component {
                 "id": user.uid,
                 "name" : user.displayName,
                 "email" : user.email,
-                "photpUrl" : user.photoURL,
+                "photoUrl" : user.photoURL,
                 "provider": user.providerData[0].providerId
                 }
               }
@@ -46,6 +46,14 @@ class App extends Component {
         this.props.logout();
       }
     })
+
+    window.addEventListener('online', function(e) {
+      console.log('online');
+    });
+    
+    window.addEventListener('offline', function(e) {
+      console.log('offline');
+    });
   }
   
   render() {
