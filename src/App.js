@@ -46,6 +46,16 @@ class App extends Component {
             )
           }
         })
+
+        // if online, set online true
+        firebaseDb.ref(".info/connected").on("value", (snap) => {
+        if (snap.val() === true) {
+          firebaseDb.ref('users/' + user.uid).update({ online: true })
+        }
+
+        // if disconnected, set online false
+        firebaseDb.ref('users/' + user.uid).onDisconnect().update({ online: false })
+      });
       } else {
         this.props.logout();
       }
