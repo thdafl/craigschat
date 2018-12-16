@@ -5,12 +5,12 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
+import { Badge, Button, withStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
-import { Badge, withStyles } from '@material-ui/core';
+import MessageBubble from '../components/MessageBubble'
 
 const styles = theme => ({
   badge: {
@@ -20,6 +20,8 @@ const styles = theme => ({
     width: 10
   },
 })
+
+const CHUNK_SIZE = 10
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -38,24 +40,26 @@ class ChatRoom extends Component {
 
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
-      this.setState({ initialMessagesLength: snapshot.numChildren()})     
+
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').limitToFirst(1).once('value', (snapshot) => {
+      this.setState({firstMessageId: Object.keys(snapshot.val())[0]})
     })
 
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
-      const m = snapshot.val()
-      let msgs = this.state.messages
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').limitToLast(CHUNK_SIZE).once('value', (snapshot) => { 
+      this.setState({messages: Object.values(snapshot.val())})
 
-      msgs.push({
-        id: m.id,
-        text : m.text,
-        user : m.user,
-        timestamp : m.timestamp
+      firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
+        const m = snapshot.val()
+        if (m.id <= this.state.messages[this.state.messages.length - 1].id) return
+        let msgs = this.state.messages
+  
+        msgs.push(m)
+  
+        this.setState({
+          messages : msgs
+        })
+        new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
       })
-
-      this.setState({
-        messages : msgs
-      });
     })
     
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
@@ -72,19 +76,23 @@ class ChatRoom extends Component {
       this.setState({currentRoomMembers: crms})     
     })
 
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
   }
 
   componentDidUpdate() {
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
+  }
+
+  loadEarlier = () => {
+    const {id: chatRoomId} = this.props.match.params
     
-    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {  
-      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
-      const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
-      if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) audio.play();
-    } else if (this.state.initialMessagesLength === 0) {
-      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
-    }
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+      .orderByKey()
+      .limitToLast(CHUNK_SIZE)
+      .endAt(this.state.messages[0].id)
+      .once('value', (snapshot) => {
+        this.setState(({messages}) => ({messages: Object.values(snapshot.val()).concat(messages.slice(1))}))
+      })
   }
 
   onTextChange(e) {
@@ -160,6 +168,7 @@ class ChatRoom extends Component {
 
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
+              {this.state.messages[0] && this.state.messages[0].id > this.state.firstMessageId && <Button onClick={this.loadEarlier} fullWidth>Load Earlier</Button>}
               {this.state.messages.map((m, i) => 
                 <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
               )}
