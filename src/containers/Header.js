@@ -93,12 +93,14 @@ class Header extends Component {
           >
             Logout
           </Button>
-          <Fab size='small' disableRipple>
-            <Avatar 
-              alt="user avatar"
-              src={this.props.user.photoUrl}
-            />
-          </Fab>
+          <Link to="/user">
+            <Fab size='small' disableRipple>
+              <Avatar 
+                alt="user avatar"
+                src={this.props.user.photoUrl}
+              />
+            </Fab>
+          </Link>
         </div>
       )
     }
