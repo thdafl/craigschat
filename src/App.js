@@ -17,19 +17,23 @@ class App extends Component {
   componentDidMount() {
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        firebaseDb.ref('users/' + user.uid).on('value', (snapshot) => {
+        firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
           if (snapshot.exists()) {
-            const user = snapshot.val()
-            this.props.login(user);
+            const existingUser = snapshot.val()
+            firebaseDb.ref('users/' + existingUser.id).update({ online: true })
+            this.props.login(existingUser);
           } else {
             firebaseDb.ref('users/' + user.uid).set({
               "id": user.uid,
               "name" : user.displayName,
               "email" : user.email,
               "photoUrl" : user.photoURL,
-              "provider": user.providerData[0].providerId
+              "provider": user.providerData[0].providerId,
+              "online": true
             })
-            this.props.login(user);
+            firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
+              this.props.login(snapshot.val());
+            })
             this.setState({ 
               user: {
                 "id": user.uid,
@@ -46,14 +50,6 @@ class App extends Component {
         this.props.logout();
       }
     })
-
-    window.addEventListener('online', function(e) {
-      console.log('online');
-    });
-    
-    window.addEventListener('offline', function(e) {
-      console.log('offline');
-    });
   }
   
   render() {

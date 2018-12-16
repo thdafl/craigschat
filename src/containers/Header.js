@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
+import { firebaseDb, firebaseAuth, googleProvider, githubProvider } from '../config/firebase.js';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withRouter, Link } from 'react-router-dom';
@@ -32,6 +32,7 @@ class Header extends Component {
   }
 
   logout() {
+    firebaseDb.ref('users/' + this.props.user.id).update({ online: false })
     firebaseAuth.signOut();
     this.props.history.push('/');
   }
