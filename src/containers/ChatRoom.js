@@ -9,6 +9,17 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import MessageBubble from '../components/MessageBubble'
+import getProfile from '../hocs/ProfileCache.js';
+import { Badge, withStyles } from '@material-ui/core';
+
+const styles = theme => ({
+  badge: {
+    top: 20,
+    right: -20,
+    height: 10,
+    width: 10
+  },
+})
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -133,10 +144,14 @@ class ChatRoom extends Component {
               <div style={{display: 'flex', flexDirection: 'column', paddingTop: '70px', maxWidth: '80%'}}>
                 <div style={{fontWeight: 100, fontSize: '15px', marginBottom: '10px'}}>Room Members</div>
                 {this.state.currentRoomMembers.map((m) => 
-                  <div key={m.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
-                    <Avatar alt="user avatar" src={m.photoUrl} style={{marginRight: '10px'}}/>
-                    <div style={{wordBreak: 'break-all'}}>{m.name}</div>
-                  </div>
+                  getProfile(m.id, user => (
+                    <Badge badgeContent="" color={user.online ? 'primary' : 'error'} classes={{ badge: this.props.classes.badge }}>
+                      <div key={user.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
+                        <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px'}}/>
+                        <div style={{wordBreak: 'break-all'}}>{user.name}</div>
+                      </div>
+                    </Badge>
+                  ))
                 )}
                 <Link to="/" style={{marginTop: '15px'}}>Back to Home</Link>
               </div>
@@ -182,4 +197,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ChatRoom));
