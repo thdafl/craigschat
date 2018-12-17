@@ -11,6 +11,9 @@ import { connect } from 'react-redux';
 
 import getProfile from '../hocs/ProfileCache.js';
 import MessageBubble from '../components/MessageBubble'
+import { Button } from '@material-ui/core';
+
+const CHUNK_SIZE = 10
 
 const styles = theme => ({
   badge: {
