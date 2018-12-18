@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { firebaseDb } from '../config/firebase.js';
+import {Picker} from 'emoji-mart'
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
+import { Button, Popover } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+
+import 'emoji-mart/css/emoji-mart.css'
 
 import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
@@ -26,6 +30,7 @@ class ChatRoom extends Component {
     super(props);
 
     this.state = {
+      emojiAnchor: null,
       text : "",
       messages : [],
       currentRoomMembers: [],
@@ -134,6 +139,14 @@ class ChatRoom extends Component {
     this.setState({userName: "", text: ""})
   }
 
+  toggleEmoji = e => {
+    if (!this.state.emojiAnchor) {
+      this.setState({emojiAnchor: e.currentTarget})
+    } else {
+      this.setState({emojiAnchor: null})
+    }
+  }
+
   render() {
     return (
       <div className="App" style={{height: '100%'}}>
@@ -164,7 +177,7 @@ class ChatRoom extends Component {
                 <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
               )}
             </div>
-            <form onSubmit={this.onButtonClick} style={{height: '10%', width: '90%',paddingBottom: '20px'}}>
+            <form onSubmit={this.onButtonClick} style={{display: 'flex', height: '10%', width: '90%',paddingBottom: '20px'}}>
               <TextField
                 id="comment-box"
                 margin="normal"
@@ -173,6 +186,22 @@ class ChatRoom extends Component {
                 value={this.state.text}
                 style={{width: '100%'}}
               />
+              <Button onClick={this.toggleEmoji}>Emoji</Button>
+              <Popover
+                open={this.state.emojiAnchor}
+                anchorEl={this.state.emojiAnchor}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                onClose={this.toggleEmoji}
+              >
+                <Picker onSelect={({native}) => this.setState(({text}) => ({text: text + native}))} native/>
+              </Popover>
             </form>
           </Grid>
 
