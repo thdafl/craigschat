@@ -5,7 +5,6 @@ import '../App.css';
 import { firebaseDb } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
 import ListCard from '../components/ListCard';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 
@@ -49,36 +48,39 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="App" style={{display: 'flex', justifyContent: 'center', height: '100%', paddingLeft: '5%', paddingRight: '5%'}}>
-        <div style={{width: '100%', paddingTop: 80}}>
+      <div className="App" style={{display: 'flex', justifyContent: 'center', height: '100%', paddingLeft: '10%', paddingRight: '10%'}}>
+        <div style={{width: '100%', paddingTop: 60}}>
           <Grid container>
             <Hidden mdDown>
-              <Grid item lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 500}}>
-                </Paper>
+              <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 200}}>
+                  This section should be sticky and filters comes here to filter chatrooms by place/genre etc.
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 200}}>
+                  and anything else, including ads maybe....
+                </div>
               </Grid>
             </Hidden>
 
-            <Grid item xs={12} sm={12} md={8} lg={6} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>       
-              {this.state.chatRooms.map((chatroom, id) => {
-                return (
-                  <ListCard
-                    key={id}
-                    onClick={() => this.onGoToChatButtonClick(chatroom.id)}
-                    {...chatroom}
-                  />
-                )
-              })}
+            <Grid item xs={12} sm={12} md={12} lg={9} style={{display: 'block'}}>
+              <Grid container>   
+                {this.state.chatRooms.map((chatroom, id) => {
+                  return (
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{display: 'block'}}>
+                      <ListCard
+                        key={id}
+                        onClick={() => this.onGoToChatButtonClick(chatroom.id)}
+                        {...chatroom}
+                      />
+                    </Grid>
+                  )
+                })}
 
-              {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
-                <Link to="/new/chatroom"></Link>
-              </div> : null}
-            </Grid>
-
-            <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 100}}></Paper>
-              <Paper square={true} style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 300}}></Paper>
-            </Grid>
+                {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
+                  <Link to="/new/chatroom"></Link>
+                </div> : null}
+              </Grid>
+            </Grid>  
 
           </Grid>
         </div>
