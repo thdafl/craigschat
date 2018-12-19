@@ -4,43 +4,81 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
+import { withStyles } from '@material-ui/core/styles';
 
-const ListCard = ({onClick, owner, title, description, place, tags = [], roommembers}) => {
+const ListCard = ({onClick, owner, title, description, place, tags = null, roommembers, classes}) => {
+  const { cardContainer, cardContent, 
+    ownerInfoWrapper, mainWrapper, ownerAvatar, ownerNameText, placeTag,
+    titleWrapper, titleText, descriptionWrapper, descriptionText, 
+    membersAvatarWrapper, membersAvatar, tagsWrapper, categoryTag } = classes;
 
   const renderAvatars = () => {
     const rms = [];
     if (roommembers) {
       for (let m in roommembers) {
-        rms.unshift(<Avatar key={m} style={{width: '25px', height: '25px'}} alt={m} src={roommembers[m].photoUrl} />)
+        rms.unshift(
+          <Avatar 
+            key={m}
+            className={membersAvatar}
+            alt={m}
+            src={roommembers[m].photoUrl}
+          />
+        )
       }
       return rms;
     }
   }
 
+  const renderTags = () => {
+    const tgs = [];
+    if (tags) {
+      tags.map((t) => 
+        tgs.push(
+          <Chip 
+            key={t} 
+            label={"#" + t}
+            className={categoryTag}
+            color="primary"
+            variant="outlined"
+          />
+        )
+      )
+    }
+    return tgs;
+  }
+
   return (
-    <Card style={{width: '95%', height: 300, margin: 10, float: 'left'}}>
+    <Card className={cardContainer}>
       <CardActionArea onClick={onClick}>
-        <CardContent style={{ height: '100%' }}>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'start', height: 35}}>
-            <Avatar style={{width: '35px', height: '35px', marginRight: 5}} alt="user-avator" src={owner.photoUrl} />
-            <Typography style={{fontSize: '15px', fontWeight: 600, marginRight: 5}}>{owner.name}</Typography>
+        <CardContent className={cardContent}>
+          <div>
+            <div className={mainWrapper}>
+              <div className={ownerInfoWrapper}>
+                <Avatar className={ownerAvatar} alt="user-avatar" src={owner.photoUrl} />
+                <Typography className={ownerNameText}>{owner.name}</Typography>
+              </div>
+              <div>
+                {place && <Chip label={place} variant="outlined" className={placeTag} />}
+              </div>
+            </div>
+            <div className={titleWrapper}>
+              <Typography className={titleText}>{title}</Typography>
+            </div>
+
+            <div className={descriptionWrapper}>
+              <Typography className={descriptionText}>{description}</Typography>
+            </div>
           </div>
 
-          <div style={{paddingTop: 5, width: '95%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', height: 35, textAlign: 'start'}}>
-            <Typography style={{fontSize: '22px', fontWeight: 600, display: 'flex', justifyContent: 'flex-start'}}>{title}</Typography>
-          </div>
+          <div>
+            <div className={membersAvatarWrapper}>
+              <div style={{display: 'flex'}}>{renderAvatars()}</div>
+            </div>
 
-          <div style={{height: 130, textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-            <Typography style={{fontSize: '15px', fontWeight: 100}}>{description}</Typography>
-          </div>
-
-          <div style={{display: 'flex', height: 45, alignItems: 'center'}}>
-            <div style={{display: 'flex'}}>{renderAvatars()}</div>
-          </div>
-
-          <div style={{display: 'flex', height: 25, textAlign: 'right'}}>
-            {place &&  <Typography style={{fontSize: '10px', fontWeight: 100, marginRight: 5}}>{place}</Typography>}
-            <Typography style={{fontSize: '10px', fontWeight: 100, marginRight: 5}}>Genre here</Typography>
+            <div className={tagsWrapper}>
+              {renderTags()}
+            </div>
           </div>
         </CardContent>
       </CardActionArea>
@@ -48,4 +86,89 @@ const ListCard = ({onClick, owner, title, description, place, tags = [], roommem
   )
 }
 
-export default ListCard;
+const styles = theme => ({
+  cardContainer: {
+    width: '95%',
+    height: 300,
+    margin: 10,
+    float: 'left'
+  },
+  cardContent: {
+    height: 270,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  mainWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 35
+  },
+  ownerInfoWrapper: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ownerAvatar: {
+    width: '35px',
+    height: '35px',
+    marginRight: 5
+  },
+  ownerNameText: {
+    fontSize: '15px',
+    fontWeight: 600,
+    marginRight: 5
+  },
+  placeTag: {
+    height: 25,
+    fontSize: '10px',
+    fontWeight: 100,
+    marginRight: 5
+  },
+  titleWrapper: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'start',
+    maxHeight: 60,
+    width: '95%',
+    paddingTop: 5, 
+  },
+  titleText: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    fontSize: '20px',
+    fontWeight: 600, 
+  },
+  descriptionWrapper: {
+    maxHeight: 100,
+    textAlign: 'start',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  },
+  descriptionText: {
+    fontSize: '15px', 
+    fontWeight: 100
+  },
+  membersAvatarWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 40, 
+  },
+  membersAvatar: {
+    width: '25px',
+    height: '25px'
+  },
+  tagsWrapper: {
+    display: 'flex',
+    height: 25,
+    textAlign: 'right'
+  },
+  categoryTag: {
+    fontSize: '8px',
+    fontWeight: 100, 
+    height: 22,
+    marginRight: 5
+  }
+});
+
+export default withStyles(styles)(ListCard);

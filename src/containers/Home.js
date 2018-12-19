@@ -53,10 +53,8 @@ class Home extends Component {
           <Grid container>
             <Hidden mdDown>
               <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 200}}>
+                <div style={{width: '90%', marginTop: '10px', position: 'sticky', top: '50px'}}>
                   This section should be sticky and filters comes here to filter chatrooms by place/genre etc.
-                </div>
-                <div style={{display: 'flex', justifyContent: 'center', width: '90%', marginTop: '10px', marginBottom: '10px', height: 200}}>
                   and anything else, including ads maybe....
                 </div>
               </Grid>
@@ -66,7 +64,7 @@ class Home extends Component {
               <Grid container>   
                 {this.state.chatRooms.map((chatroom, id) => {
                   return (
-                    <Grid item xs={12} sm={6} md={4} lg={4} style={{display: 'block'}}>
+                    <Grid item xs={12} sm={6} md={4} lg={4} key={id} style={{display: 'block'}}>
                       <ListCard
                         key={id}
                         onClick={() => this.onGoToChatButtonClick(chatroom.id)}
