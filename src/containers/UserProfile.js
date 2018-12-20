@@ -1,12 +1,23 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { Card, Avatar } from '@material-ui/core';
+import { Card, Avatar, Button } from '@material-ui/core';
 
-class UserProfile extends Component {
-  render() {
-    const {loginUser = {}} = this.props.user
+import {firebaseAuth} from '../config/firebase'
+import { userLogout } from '../store/users/actions';
+
+class UserProfile extends Component {  
+  deleteAccount = async () => {
+    const {credential} = await firebaseAuth.signInWithPopup(require('../config/firebase')[this.props.user.loginUser.provider.split('.')[0] + 'Provider'])
     
-    return (
+    await firebaseAuth.currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
+    await firebaseAuth.currentUser.delete()
+    await this.props.logout()
+  }
+  
+  render() {
+    const {loginUser} = this.props.user
+
+    return loginUser ? (
       <div className="App" style={{height: '100vh'}}>
         <div style={{width: '100%', paddingTop: 80}}>
           <Card style={{display: 'flex', padding: 20, flexDirection: 'row', margin: 'auto', maxWidth: 700}}>
@@ -16,14 +27,20 @@ class UserProfile extends Component {
               <div>{loginUser.email}</div>
             </div>
           </Card>
+
+          <Button style={{color: 'red'}} onClick={this.deleteAccount}>Delete Account</Button>
         </div>
       </div>
-    )
+    ) : null
   }
 }
 
 const mapStateToProps = state => ({
-  user: state.users
+  user: state.users || {}
 })
 
-export default connect(mapStateToProps)(UserProfile)
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(userLogout())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)
