@@ -53,19 +53,17 @@ class ChatRoom extends Component {
     })
 
     this.chatroomRef.limitToLast(CHUNK_SIZE).once('value', (snapshot) => { 
-      this.setState({messages: Object.values(snapshot.val() || {})})
-
-      this.chatroomRef.on('child_added', (snapshot) => {
-        const m = snapshot.val()
-        if (this.state.messages[this.state.messages.length - 1] && m.id <= this.state.messages[this.state.messages.length - 1].id) return
-        let msgs = this.state.messages
-  
-        msgs.push(m)
-  
-        this.setState({
-          messages : msgs
+      this.setState({messages: Object.values(snapshot.val() || {})}, () => {
+        this.chatroomRef.on('child_added', (snapshot) => {
+          const m = snapshot.val()
+          if (this.state.messages[this.state.messages.length - 1] && m.id <= this.state.messages[this.state.messages.length - 1].id) return
+          let msgs = this.state.messages
+    
+          this.setState({
+            messages : msgs.concat(m)
+          })
+          new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
         })
-        new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
       })
     })
     
@@ -74,13 +72,11 @@ class ChatRoom extends Component {
       const m = snapshot.val() 
       let crms = this.state.currentRoomMembers
 
-      crms.push({
+      this.setState({currentRoomMembers: crms.concat({
         id: m.id,
         name: m.name,
         photoUrl: m.photoUrl
-      })
-
-      this.setState({currentRoomMembers: crms})     
+      })})     
     })
 
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
@@ -91,7 +87,9 @@ class ChatRoom extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    if (!prevState.messages[prevState.messages.length - 1] || prevState.messages[prevState.messages.length - 1].id < this.state.messages[this.state.messages.length - 1].id) {
+    if (
+      (!prevState.messages[prevState.messages.length - 1]) ||
+      (this.state.messages[this.state.messages.length - 1] && prevState.messages[prevState.messages.length - 1].id < this.state.messages[this.state.messages.length - 1].id)) {
       if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
     }
   }
