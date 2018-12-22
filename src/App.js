@@ -61,7 +61,7 @@ class App extends Component {
         })
 
         // if disconnected, set online false
-        firebaseDb.ref('users/' + user.uid).onDisconnect().update({ online: false })
+        firebaseDb.ref('users/' + user.uid + '/online').onDisconnect().remove()
       } else {
         this.props.logout();
       }
