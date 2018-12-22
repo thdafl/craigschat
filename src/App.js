@@ -61,11 +61,7 @@ class App extends Component {
         })
 
         // if disconnected, set online false
-        firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
-          if (snapshot.exists()) {
-            firebaseDb.ref('users/' + user.uid).onDisconnect().update({ online: false })
-          }
-        })
+        firebaseDb.ref('users/' + user.uid).onDisconnect().update({ online: false })
       } else {
         this.props.logout();
       }

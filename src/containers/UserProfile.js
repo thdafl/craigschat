@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import { Card, Avatar, Button } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
-import {firebaseAuth} from '../config/firebase'
+import {firebaseDb, firebaseAuth} from '../config/firebase'
 import { userLogout } from '../store/users/actions';
 
 class UserProfile extends Component {  
@@ -11,7 +12,9 @@ class UserProfile extends Component {
     
     await firebaseAuth.currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
     await firebaseAuth.currentUser.delete()
+    await firebaseDb.ref('users/' + this.props.user.loginUser.id).remove()
     await this.props.logout()
+    this.props.history.push("/")
   }
   
   render() {
@@ -43,4 +46,4 @@ const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch(userLogout())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfile))
