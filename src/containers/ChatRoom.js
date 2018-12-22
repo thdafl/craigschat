@@ -43,6 +43,9 @@ class ChatRoom extends Component {
 
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
+
+    this.chatroomRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
       this.setState({ initialMessagesLength: snapshot.numChildren()})     
     })
@@ -62,7 +65,15 @@ class ChatRoom extends Component {
         messages : msgs
       });
     })
-    
+
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_removed', snapshot => {
+      const m = snapshot.val()
+
+      this.setState(({messages}) => ({
+        messages: messages.filter(msg => msg.id !== m.id)
+      }))
+    })
+
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
     firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').on('child_added', (snapshot) => { 
       const m = snapshot.val() 
@@ -82,7 +93,7 @@ class ChatRoom extends Component {
 
   componentDidUpdate() {
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
-    
+
     if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {  
       this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
       const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
@@ -90,6 +101,10 @@ class ChatRoom extends Component {
     } else if (this.state.initialMessagesLength === 0) {
       this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
     }
+  }
+
+  deleteMessage = (msg) => {
+    this.chatroomRef.child(msg.id).remove()
   }
 
   onTextChange(e) {
@@ -174,7 +189,9 @@ class ChatRoom extends Component {
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
             <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
               {this.state.messages.map((m, i) => 
-                <div key={i} ref={(el) => { this.messagesEnd = el; }}><MessageBubble key={i} message={m}/></div>
+                <div key={m.id} ref={(el) => { this.messagesEnd = el; }}>
+                  <MessageBubble user={this.props.user} message={m} onDelete={this.deleteMessage}/>
+                </div>
               )}
             </div>
             <form onSubmit={this.onButtonClick} style={{display: 'flex', height: '10%', width: '90%',paddingBottom: '20px'}}>
