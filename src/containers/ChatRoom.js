@@ -205,7 +205,7 @@ class ChatRoom extends Component {
               />
               <Button onClick={this.toggleEmoji}>Emoji</Button>
               <Popover
-                open={this.state.emojiAnchor}
+                open={Boolean(this.state.emojiAnchor)}
                 anchorEl={this.state.emojiAnchor}
                 anchorOrigin={{
                   vertical: 'top',

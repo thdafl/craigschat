@@ -45,5 +45,5 @@ class ProfileCache extends Component {
 
 
 export default function getProfile(id, cb) {
-  return <ProfileCache id={id} cb={cb}/>
+  return <ProfileCache key={id} id={id} cb={cb}/>
 }
