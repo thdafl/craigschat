@@ -20,7 +20,7 @@ class UserProfile extends Component {
     await firebaseAuth.currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
     await firebaseAuth.currentUser.delete()
     await firebaseAuth.signOut()
-    await firebaseDb.ref('users/' + this.props.user.loginUser.id).remove()
+    await firebaseDb.ref('users/' + this.props.user.loginUser.id + '/deleted/').set(true)
     await this.props.logout()
     this.props.history.push("/")
   }
