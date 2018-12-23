@@ -10,6 +10,13 @@ class UserProfile extends Component {
   deleteAccount = async () => {
     const {credential} = await firebaseAuth.signInWithPopup(require('../config/firebase')[this.props.user.loginUser.provider.split('.')[0] + 'Provider'])
     
+    await firebaseDb.ref('chatrooms/').once('value', (snapshot) => { 
+      snapshot.forEach(cr => {
+        if (cr.val().owner.id === this.props.user.loginUser.id) {
+          firebaseDb.ref('chatrooms/' + cr.val().id + '/archived/').set(true)
+        }
+      })
+    })
     await firebaseAuth.currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
     await firebaseAuth.currentUser.delete()
     await firebaseAuth.signOut()
