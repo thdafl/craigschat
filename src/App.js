@@ -23,7 +23,8 @@ class App extends Component {
             const existingUser = snapshot.val()
             firebaseDb.ref('users/' + existingUser.id).update({ online: true })
             this.props.login(existingUser);
-          } else {
+          } 
+          else {
             firebaseDb.ref('users/' + user.uid).set({
               "id": user.uid,
               "name" : user.displayName,
@@ -50,13 +51,17 @@ class App extends Component {
 
         // if online, set online true
         firebaseDb.ref(".info/connected").on("value", (snap) => {
-        if (snap.val() === true) {
-          firebaseDb.ref('users/' + user.uid).update({ online: true })
-        }
+          if (snap.val() === true) {
+            firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
+              if (snapshot.exists()) {
+                firebaseDb.ref('users/' + user.uid).update({ online: true })
+              }
+            })
+          }
+        })
 
         // if disconnected, set online false
-        firebaseDb.ref('users/' + user.uid).onDisconnect().update({ online: false })
-      });
+        firebaseDb.ref('users/' + user.uid + '/online').onDisconnect().remove()
       } else {
         this.props.logout();
       }

@@ -109,9 +109,9 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="fixed" color="default">
+      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee'}}>
         <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
-          <div style={{display: 'flex', alignItems: 'center'}}>
+          <div style={{display: 'flex', alignItems: 'center', fontSize: '15px'}}>
             NoNameYet
           </div>
 

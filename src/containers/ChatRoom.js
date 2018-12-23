@@ -46,15 +46,21 @@ class ChatRoom extends Component {
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
 
-    this.chatroomRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    
+    this.messagesRef.once('value', (snapshot) => { 
+      this.setState({ initialMessagesLength: snapshot.numChildren()})     
+    })
 
-    this.chatroomRef.limitToFirst(1).once('value', (snapshot) => {
+    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+
+    this.messagesRef.limitToFirst(1).once('value', (snapshot) => {
       this.setState({firstMessageId: Object.keys(snapshot.val() || {})[0]})
     })
 
-    this.chatroomRef.limitToLast(CHUNK_SIZE).once('value', (snapshot) => { 
+    this.messagesRef.limitToLast(CHUNK_SIZE).once('value', (snapshot) => { 
       this.setState({messages: Object.values(snapshot.val() || {})}, () => {
-        this.chatroomRef.on('child_added', (snapshot) => {
+        this.messagesRef.on('child_added', (snapshot) => {
           const m = snapshot.val()
           if (this.state.messages[this.state.messages.length - 1] && m.id <= this.state.messages[this.state.messages.length - 1].id) return
           let msgs = this.state.messages
@@ -66,7 +72,15 @@ class ChatRoom extends Component {
         })
       })
     })
-    
+
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_removed', snapshot => {
+      const m = snapshot.val()
+
+      this.setState(({messages}) => ({
+        messages: messages.filter(msg => msg.id !== m.id)
+      }))
+    })
+
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
     firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').on('child_added', (snapshot) => { 
       const m = snapshot.val() 
@@ -83,7 +97,7 @@ class ChatRoom extends Component {
   }
 
   componentWillUnmount() {
-    this.chatroomRef.off()
+    this.messagesRef.off()
   }
 
   componentDidUpdate(_, prevState) {
@@ -115,6 +129,11 @@ class ChatRoom extends Component {
         )
         this.loadingEarlier = false
       })
+    }
+
+    deleteMessage = (msg) => {
+      this.messagesRef.child(msg.id).remove()
+    }
   }
 
   onTextChange(e) {
@@ -209,7 +228,7 @@ class ChatRoom extends Component {
                 isReverse
               >
                 {this.state.messages.map((m, i) => 
-                  <div key={m.id} ref={(el) => { if (i === 0) {this.messageHead = el}; this.messagesEnd = el; }}><MessageBubble message={m}/></div>
+                  <div key={m.id} ref={(el) => { if (i === 0) {this.messageHead = el}; this.messagesEnd = el; }}><MessageBubble user={this.props.user} message={m} onDelete={this.deleteMessage}/></div>
                 )}
               </InfiniteScroll>
             </div>
