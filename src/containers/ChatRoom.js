@@ -16,7 +16,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
 
-const CHUNK_SIZE = 10
+const CHUNK_SIZE = 20
 
 const styles = theme => ({
   badge: {
