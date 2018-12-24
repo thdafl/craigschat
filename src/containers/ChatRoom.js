@@ -129,11 +129,10 @@ class ChatRoom extends Component {
         )
         this.loadingEarlier = false
       })
-    }
+  }
 
-    deleteMessage = (msg) => {
-      this.messagesRef.child(msg.id).remove()
-    }
+  deleteMessage = (msg) => {
+    this.messagesRef.child(msg.id).remove()
   }
 
   onTextChange(e) {
