@@ -75,6 +75,7 @@ class Home extends Component {
                       </Grid>
                     )
                   }
+                  return null
                 })}
 
                 {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
