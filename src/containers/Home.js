@@ -33,7 +33,8 @@ class Home extends Component {
         tags: ctr.tags,
         place: ctr.place,
         description : ctr.description,
-        roommembers: ctr.roommembers
+        roommembers: ctr.roommembers,
+        archived: ctr.archived
       })
 
       this.setState({
@@ -63,15 +64,18 @@ class Home extends Component {
             <Grid item xs={12} sm={12} md={12} lg={9} style={{display: 'block'}}>
               <Grid container>   
                 {this.state.chatRooms.map((chatroom, id) => {
-                  return (
-                    <Grid item xs={12} sm={6} md={4} lg={4} key={id} style={{display: 'block'}}>
-                      <ListCard
-                        key={id}
-                        onClick={() => this.onGoToChatButtonClick(chatroom.id)}
-                        {...chatroom}
-                      />
-                    </Grid>
-                  )
+                  if(!chatroom.archived) {
+                    return (
+                      <Grid item xs={12} sm={6} md={4} lg={4} key={id} style={{display: 'block'}}>
+                        <ListCard
+                          key={id}
+                          onClick={() => this.onGoToChatButtonClick(chatroom.id)}
+                          {...chatroom}
+                        />
+                      </Grid>
+                    )
+                  }
+                  return null
                 })}
 
                 {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>

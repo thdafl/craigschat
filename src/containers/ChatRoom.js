@@ -201,14 +201,16 @@ class ChatRoom extends Component {
                 <div style={{fontWeight: 100, fontSize: '15px', marginBottom: '10px'}}>Room Members</div>
                 {this.state.currentRoomMembers.map((m) => 
                   getProfile(m.id, user => (
+                    (user.deleted) ? 
+                    null :
                     <Badge badgeContent="" color={user.online ? 'primary' : 'error'} classes={{ badge: this.props.classes.badge }}>
                       <div key={user.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
                         <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px'}}/>
                         <div style={{wordBreak: 'break-all'}}>{user.name}</div>
                       </div>
                     </Badge>
-                  ))
-                )}
+                  )
+                ))}
                 <Link to="/" style={{marginTop: '15px'}}>Back to Home</Link>
               </div>
             </Grid>
@@ -242,7 +244,7 @@ class ChatRoom extends Component {
               />
               <Button onClick={this.toggleEmoji}>Emoji</Button>
               <Popover
-                open={this.state.emojiAnchor}
+                open={Boolean(this.state.emojiAnchor)}
                 anchorEl={this.state.emojiAnchor}
                 anchorOrigin={{
                   vertical: 'top',

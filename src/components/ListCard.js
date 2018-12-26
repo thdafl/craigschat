@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
+import getProfile from '../hocs/ProfileCache.js';
 
 const ListCard = ({onClick, owner, title, description, place, tags = null, roommembers, classes}) => {
   const { cardContainer, cardContent, 
@@ -13,22 +14,19 @@ const ListCard = ({onClick, owner, title, description, place, tags = null, roomm
     titleWrapper, titleText, descriptionWrapper, descriptionText, 
     membersAvatarWrapper, membersAvatar, tagsWrapper, categoryTag } = classes;
 
-  const renderAvatars = () => {
-    const rms = [];
-    if (roommembers) {
-      for (let m in roommembers) {
-        rms.unshift(
-          <Avatar 
-            key={m}
-            className={membersAvatar}
-            alt={m}
-            src={roommembers[m].photoUrl}
-          />
-        )
-      }
-      return rms;
-    }
-  }
+  const renderAvatars = () => (
+    Object.keys(roommembers).map(id => 
+      getProfile(id, user => (
+        (user.deleted) ? null :
+        <Avatar
+          key={id}
+          className={membersAvatar}
+          alt={user.name}
+          src={user.photoUrl}
+        />
+      ))
+    )
+  )
 
   const renderTags = () => {
     const tgs = [];
