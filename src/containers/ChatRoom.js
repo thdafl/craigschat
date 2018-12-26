@@ -6,15 +6,17 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
-import { Button, Popover } from '@material-ui/core';
+import { Badge, withStyles, CircularProgress, Button, Popover } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroller'
 
 import 'emoji-mart/css/emoji-mart.css'
 
 import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
-import { Badge, withStyles } from '@material-ui/core';
+
+const CHUNK_SIZE = 20
 
 const styles = theme => ({
   badge: {
@@ -44,26 +46,31 @@ class ChatRoom extends Component {
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
 
-    this.chatroomRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
     
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').once('value', (snapshot) => { 
+    this.messagesRef.once('value', (snapshot) => { 
       this.setState({ initialMessagesLength: snapshot.numChildren()})     
     })
 
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
-      const m = snapshot.val()
-      let msgs = this.state.messages
+    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
 
-      msgs.push({
-        id: m.id,
-        text : m.text,
-        user : m.user,
-        timestamp : m.timestamp
+    this.messagesRef.limitToFirst(1).once('value', (snapshot) => {
+      this.setState({firstMessageId: Object.keys(snapshot.val() || {})[0]})
+    })
+
+    this.messagesRef.limitToLast(CHUNK_SIZE).once('value', (snapshot) => { 
+      this.setState({messages: Object.values(snapshot.val() || {})}, () => {
+        this.messagesRef.on('child_added', (snapshot) => {
+          const m = snapshot.val()
+          if (this.state.messages[this.state.messages.length - 1] && m.id <= this.state.messages[this.state.messages.length - 1].id) return
+          let msgs = this.state.messages
+    
+          this.setState({
+            messages : msgs.concat(m)
+          })
+          new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
+        })
       })
-
-      this.setState({
-        messages : msgs
-      });
     })
 
     firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_removed', snapshot => {
@@ -79,32 +86,53 @@ class ChatRoom extends Component {
       const m = snapshot.val() 
       let crms = this.state.currentRoomMembers
 
-      crms.push({
+      this.setState({currentRoomMembers: crms.concat({
         id: m.id,
         name: m.name,
         photoUrl: m.photoUrl
-      })
-
-      this.setState({currentRoomMembers: crms})     
+      })})     
     })
 
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
+    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
   }
 
-  componentDidUpdate() {
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"});
+  componentWillUnmount() {
+    this.messagesRef.off()
+  }
 
-    if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) {  
-      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
-      const audio = new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87")
-      if (this.state.initialMessagesLength && this.state.initialMessagesLength < this.state.messages.length) audio.play();
-    } else if (this.state.initialMessagesLength === 0) {
-      this.setState({initialMessagesLength: this.state.initialMessagesLength + 1})
+  componentDidUpdate(_, prevState) {
+    if (
+      (!prevState.messages[prevState.messages.length - 1]) ||
+      (this.state.messages[this.state.messages.length - 1] && prevState.messages[prevState.messages.length - 1].id < this.state.messages[this.state.messages.length - 1].id)) {
+      if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
     }
   }
 
+  loadEarlier = () => {
+    if (this.loadingEarlier) return
+    this.loadingEarlier = true
+
+    const {id: chatRoomId} = this.props.match.params
+
+    const head = this.messageHead
+    
+    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+      .orderByKey()
+      .limitToLast(CHUNK_SIZE)
+      .endAt(this.state.messages[0].id)
+      .once('value', (snapshot) => {
+        this.setState(
+          ({messages}) => ({messages: Object.values(snapshot.val()).concat(messages.slice(1))}),
+          () => {
+            head.scrollIntoView({behaviour: 'instant'})
+          }
+        )
+        this.loadingEarlier = false
+      })
+  }
+
   deleteMessage = (msg) => {
-    this.chatroomRef.child(msg.id).remove()
+    this.messagesRef.child(msg.id).remove()
   }
 
   onTextChange(e) {
@@ -187,12 +215,21 @@ class ChatRoom extends Component {
           </Hidden>
 
           <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
-            <div id="chatbox" style={{height: '90%', width: '100%', overflowY: 'scroll'}}>
-              {this.state.messages.map((m, i) => 
-                <div key={m.id} ref={(el) => { this.messagesEnd = el; }}>
-                  <MessageBubble user={this.props.user} message={m} onDelete={this.deleteMessage}/>
-                </div>
-              )}
+            <div id="chatbox" style={{height: '90%', width: '100%', overflow: 'auto'}}>
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadEarlier}
+                hasMore={this.state.messages[0] && this.state.messages[0].id > this.state.firstMessageId}
+                loader={<div className="loader" key={0}><CircularProgress /></div>}
+                threshold={50}
+                useWindow={false}
+                initialLoad={false}
+                isReverse
+              >
+                {this.state.messages.map((m, i) => 
+                  <div key={m.id} ref={(el) => { if (i === 0) {this.messageHead = el}; this.messagesEnd = el; }}><MessageBubble user={this.props.user} message={m} onDelete={this.deleteMessage}/></div>
+                )}
+              </InfiniteScroll>
             </div>
             <form onSubmit={this.onButtonClick} style={{display: 'flex', height: '10%', width: '90%',paddingBottom: '20px'}}>
               <TextField
