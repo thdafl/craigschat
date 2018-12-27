@@ -86,11 +86,13 @@ class ChatRoom extends Component {
       const m = snapshot.val() 
       let crms = this.state.currentRoomMembers
 
-      this.setState({currentRoomMembers: crms.concat({
+      crms.push({
         id: m.id,
         name: m.name,
         photoUrl: m.photoUrl
-      })})     
+      })
+      
+      this.setState({currentRoomMembers: crms}) 
     })
 
     if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
