@@ -46,13 +46,11 @@ class ChatRoom extends Component {
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
 
-    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    this.messagesRef = firebaseDb.ref('messages/' + chatRoomId)
     
     this.messagesRef.once('value', (snapshot) => { 
       this.setState({ initialMessagesLength: snapshot.numChildren()})     
     })
-
-    this.messagesRef = firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
 
     this.messagesRef.limitToFirst(1).once('value', (snapshot) => {
       this.setState({firstMessageId: Object.keys(snapshot.val() || {})[0]})
@@ -73,7 +71,7 @@ class ChatRoom extends Component {
       })
     })
 
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_removed', snapshot => {
+    this.messagesRef.on('child_removed', snapshot => {
       const m = snapshot.val()
 
       this.setState(({messages}) => ({
@@ -118,7 +116,7 @@ class ChatRoom extends Component {
 
     const head = this.messageHead
     
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/')
+    firebaseDb.ref('messages/' + chatRoomId)
       .orderByKey()
       .limitToLast(CHUNK_SIZE)
       .endAt(this.state.messages[0].id)
@@ -152,13 +150,13 @@ class ChatRoom extends Component {
       return
     }
 
-    const key = firebaseDb.ref('chatrooms/').push().key;
+    const key = firebaseDb.ref('messages/').push().key;
     const guest = {
       name: "Guest",
       photoUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
     }
 
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/' + key).set({
+    firebaseDb.ref('messages/' + chatRoomId + '/' + key).set({
       "id": key,
       "user" : (this.props.user) ? this.props.user : guest,
       "text" : this.state.text,
