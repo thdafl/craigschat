@@ -17,8 +17,7 @@ class Home extends Component {
       user: "",
       id: "",
       description : "",
-      chatRooms: [],
-      usersChatRooms: []
+      chatRooms: []
     }
 
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
@@ -28,7 +27,6 @@ class Home extends Component {
     firebaseDb.ref('chatrooms').on('child_added', (snapshot) => {
       const ctr = snapshot.val()
       const chatrooms = this.state.chatRooms
-      // const usersChatRooms = this.state.usersChatRooms
 
       chatrooms.push({
         id: ctr.id,
@@ -40,10 +38,6 @@ class Home extends Component {
         roommembers: ctr.roommembers,
         archived: ctr.archived
       })
-
-      // if (this.props.user.loginUser.id === ctr.owner.id) {
-        console.log("&&&&", this.props.user)
-      
 
       this.setState({
         chatRooms : chatrooms
