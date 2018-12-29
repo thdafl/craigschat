@@ -9,7 +9,9 @@ import Hidden from '@material-ui/core/Hidden';
 import { Badge, withStyles, CircularProgress, Button, Popover } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroller';
+import ChatRoomDetails from '../components/ChatRoomDetails';
+import ChatRoomEvents from '../components/ChatRoomEvents';
 
 import 'emoji-mart/css/emoji-mart.css'
 
@@ -262,10 +264,9 @@ class ChatRoom extends Component {
           </Grid>
 
           <Hidden smDown>
-            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '80px'}}>  
-                ChatRoom details come here
-              </div>
+            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomDetails /></div>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
             </Grid>
           </Hidden>
         </Grid>
