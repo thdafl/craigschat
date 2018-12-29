@@ -2,12 +2,12 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
-const ChatRoomDetails = React.memo(({chatroom, onDelete}) => {
+const ChatRoomDetails = React.memo(({chatroom, editable, onDelete, onEdit}) => {
   return (
     <div>
       <div>
-        <Button size='small' variant="outlined" color="primary">Edit Details</Button>
-        <Button size='small' variant="outlined" color="secondary" onClick={() => onDelete(chatroom)}>Delete Chatroom</Button>
+        {editable && <Button size='small' variant="outlined" color="primary" onClick={() => onEdit(chatroom)}>Edit Details</Button>}
+        {editable && <Button size='small' variant="outlined" color="secondary" onClick={() => onDelete(chatroom)}>Delete Chatroom</Button>}
       </div>
       {chatroom && (
         <div style={{display: 'flex', flexDirection: 'column', textAlign: 'left'}}>  

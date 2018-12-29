@@ -6,7 +6,7 @@ import { firebaseDb, firebaseAuth } from './config/firebase.js';
 import { userLogin, userLogout } from './store/users/actions';
 import Home from './containers/Home';
 import ChatRoom from './containers/ChatRoom';
-import CreateChatRoom from './containers/CreateChatRoom'
+import EditChatRoom from './containers/EditChatRoom'
 import UserProfile from './containers/UserProfile'
 import Header from './containers/Header'
 import './App.css';
@@ -75,8 +75,9 @@ class App extends Component {
         <Switch>
           <Route path='/' component={Home} exact={true} />
           <Route path="/user/:id?" component={UserProfile}/>
+          <Route path='/chatroom/:id/edit' component={EditChatRoom} />
           <Route path='/chatroom/:id' component={ChatRoom} />
-          <Route path="/new/chatroom" component={CreateChatRoom}/>
+          <Route path="/new/chatroom" component={EditChatRoom}/>
         </Switch>
       </div>
     );

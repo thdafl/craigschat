@@ -276,7 +276,12 @@ class ChatRoom extends Component {
           <Hidden smDown>
             <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
               <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
-                  <ChatRoomDetails chatroom={this.state.chatroom} onDelete={this.deleteChatroom}/>
+                  <ChatRoomDetails
+                    chatroom={this.state.chatroom}
+                    onDelete={this.deleteChatroom}
+                    editable={(this.props.user && this.props.user.id) === (this.state.chatroom && this.state.chatroom.owner.id)}
+                    onEdit={() => this.props.history.push(`${this.props.location.pathname}/edit`)}
+                  />
               </div>
               <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
             </Grid>

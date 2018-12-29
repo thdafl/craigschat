@@ -5,7 +5,7 @@ import ChipInput from 'material-ui-chip-input'
 import { firebaseDb } from '../config/firebase.js';
 import { TextField, Card, Button } from '@material-ui/core';
 
-class CreateChatRoom extends Component {
+class EditChatRoom extends Component {
   state = {
     title: '',
     description: '',
@@ -15,21 +15,14 @@ class CreateChatRoom extends Component {
 
   componentDidMount() {
     const chatRoomId = this.props.match.params.id;
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
-      const m = snapshot.val()
-      let msgs = this.state.messages
 
-      msgs.push({
-        id: m.id,
-        text : m.text,
-        userName : m.userName,
-        timestamp : m.timestamp
+    if (chatRoomId) {
+      firebaseDb.ref('chatrooms/' + chatRoomId).on('value', (snapshot) => {
+        this.setState(snapshot.val())
       })
-
-      this.setState({
-        messages : msgs
-      });
-    })
+    } else {
+      this.setState(() => ({title: '', description: '', place: '', tags: []}))
+    }
   }
 
   onTextChange = (e) => {
@@ -39,17 +32,18 @@ class CreateChatRoom extends Component {
   onFormSubmit = (e) => {
     e.preventDefault()
 
-    const {key} = firebaseDb.ref('chatrooms').push();
-    firebaseDb.ref('chatrooms/' + key).set({
-      "id": key,
+    const id = this.state.id || firebaseDb.ref('chatrooms').push().key;
+    firebaseDb.ref('chatrooms/' + id).set({
+      "id": id,
       "owner" : this.props.user.loginUser,
       ...this.state
     }).then(() => {
-      firebaseDb.ref('chatrooms/' + key + '/roommembers/' + this.props.user.loginUser.id).set(this.props.user.loginUser)
-      this.props.history.push(`/chatroom/${key}`)
+      console.log('id: ', id)
+      
+      firebaseDb.ref('chatrooms/' + id + '/roommembers/' + this.props.user.loginUser.id)
+        .set(this.props.user.loginUser, () => this.props.history.push(`/chatroom/${id}`))
+      
     })
-
-    this.setState({key: "", ownerName: "", description: ""})
   }
   
   render() {
@@ -81,9 +75,11 @@ class CreateChatRoom extends Component {
             />
             <ChipInput
               label="Tags"
-              onChange={tags => this.setState({tags})}
+              value={this.state.tags}
+              onAdd={tag => this.setState({tags: this.state.tags.concat(tag)})}
+              onDelete={(tag, index) => this.setState({tags: this.state.tags.filter(t => t !== tag)})}
             />
-            <Button color="primary" variant="contained" type="submit">Add ChatRoom</Button>
+            <Button color="primary" variant="contained" type="submit">{this.state.id ? 'Edit' : 'Create'} ChatRoom</Button>
           </form>
         </Card>
       </div>
@@ -98,4 +94,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateChatRoom)
+export default connect(mapStateToProps, mapDispatchToProps)(EditChatRoom)
