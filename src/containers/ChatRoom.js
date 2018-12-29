@@ -81,6 +81,10 @@ class ChatRoom extends Component {
       }))
     })
 
+    firebaseDb.ref('chatrooms/' + chatRoomId).on('value', (snapshot) => {
+      this.setState({chatroom: snapshot.val()})
+    })
+
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
     firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').on('child_added', (snapshot) => { 
       const m = snapshot.val() 
@@ -265,7 +269,7 @@ class ChatRoom extends Component {
 
           <Hidden smDown>
             <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomDetails /></div>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomDetails chatroom={this.state.chatroom} /></div>
               <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
             </Grid>
           </Hidden>

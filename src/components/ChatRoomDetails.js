@@ -2,16 +2,23 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
-const ChatRoomDetails = () => {
+const ChatRoomDetails = ({chatroom}) => {
   return (
     <div>
       <div>
         <Button size='small' variant="outlined" color="primary">Edit Details</Button>
         <Button size='small' variant="outlined" color="secondary">Delete Chatroom</Button>
       </div>
-      <div>Chatowner</div>
-      <div>ChatDetails</div>
-      <div>etc...</div>
+      {chatroom && (
+        <div style={{display: 'flex', flexDirection: 'column', textAlign: 'left'}}>  
+          <h2>{chatroom.title}</h2>
+          <span>@{chatroom.place}</span>
+          <p>{chatroom.description}</p>
+          <div>
+            {(chatroom.tags || []).map(tag => <a href="#" style={{marginRight: 5, textDecoration: 'none'}}>{`#${tag}`}</a>)}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
