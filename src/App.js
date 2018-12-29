@@ -3,7 +3,7 @@ import ReactGA from 'react-ga';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firebaseDb, firebaseAuth } from './config/firebase.js';
-import { userLogin, userLogout } from './store/users/actions';
+import { userLogin, userLogout } from './store/user/actions';
 import Home from './containers/Home';
 import ChatRoom from './containers/ChatRoom';
 import CreateChatRoom from './containers/CreateChatRoom'
@@ -84,7 +84,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users.loginUser
+  user: state.userReducer.loginUser
 })
 
 const mapDispatchToProps = (dispatch) => ({

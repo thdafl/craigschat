@@ -84,7 +84,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users,
+  user: state.userReducer.loginUser,
   chatrooms: state.chatroomsReducer.chatrooms,
   loading: state.chatroomsReducer.loading
 })

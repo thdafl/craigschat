@@ -2,9 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import { Card, Avatar, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
-
 import {firebaseDb, firebaseAuth} from '../config/firebase'
-import { userLogout } from '../store/users/actions';
+import { userLogout } from '../store/user/actions';
 
 class UserProfile extends Component {  
   deleteAccount = async () => {
@@ -47,7 +46,7 @@ class UserProfile extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.users || {}
+  user: state.userReducer || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({

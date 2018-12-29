@@ -277,7 +277,7 @@ class ChatRoom extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users.loginUser
+  user: state.userReducer.loginUser
 })
 
 const mapDispatchToProps = (dispatch) => ({

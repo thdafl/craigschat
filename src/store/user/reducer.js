@@ -1,4 +1,4 @@
-const users = (state = {}, action) => {
+const userReducer = (state = {}, action) => {
   switch(action.type) {
     case 'USER_LOGIN':
     return {
@@ -15,4 +15,4 @@ const users = (state = {}, action) => {
   }
 }
 
-export default users;
+export default userReducer;
