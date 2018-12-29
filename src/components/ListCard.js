@@ -15,7 +15,7 @@ const ListCard = ({onClick, owner, title, description, place, tags = null, roomm
     membersAvatarWrapper, membersAvatar, tagsWrapper, categoryTag } = classes;
 
   const renderAvatars = () => (
-    Object.keys(roommembers).map(id => 
+    Object.keys(roommembers || {}).map(id => 
       getProfile(id, user => (
         (user.deleted) ? null :
         <Avatar

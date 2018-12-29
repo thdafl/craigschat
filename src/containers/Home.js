@@ -2,47 +2,23 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import '../App.css';
-import { firebaseDb } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
+import { fetchChatrooms } from '../store/chatroom/actions';
 import ListCard from '../components/ListCard';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import { Hidden, CircularProgress } from '@material-ui/core';
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      user: "",
-      id: "",
-      description : "",
-      chatRooms: []
-    }
 
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
   }
 
-  componentDidMount() {
-    firebaseDb.ref('chatrooms').on('child_added', (snapshot) => {
-      const ctr = snapshot.val()
-      const chatrooms = this.state.chatRooms
-
-      chatrooms.push({
-        id: ctr.id,
-        owner : ctr.owner,
-        title: ctr.title,
-        tags: ctr.tags,
-        place: ctr.place,
-        description : ctr.description,
-        roommembers: ctr.roommembers,
-        archived: ctr.archived
-      })
-
-      this.setState({
-        chatRooms : chatrooms
-      });
-    })
+  componentWillMount() {
+    this.props.fetchChatrooms();
   }
 
   onGoToChatButtonClick(id) {
@@ -78,8 +54,8 @@ class Home extends Component {
             </Hidden>
 
             <Grid item xs={12} sm={12} md={12} lg={9} style={{display: 'block'}}>
-              <Grid container>   
-                {this.state.chatRooms.map((chatroom, id) => {
+              <Grid container>
+                {(!this.props.loading) ? this.props.chatrooms.map((chatroom, id) => {
                   if(!chatroom.archived) {
                     return (
                       <Grid item xs={12} sm={6} md={4} lg={4} key={id} style={{display: 'block'}}>
@@ -91,12 +67,12 @@ class Home extends Component {
                       </Grid>
                     )
                   }
-                  return null
-                })}
-
-                {(this.props.user.loginUser) ? <div style={{marginBottom: '20px'}}>
-                  <Link to="/new/chatroom"></Link>
-                </div> : null}
+                  return null 
+                  }) : 
+                  <div style={{width: '100%', paddingTop: 100}}>
+                    <CircularProgress />
+                  </div>
+                }
               </Grid>
             </Grid>  
 
@@ -108,10 +84,13 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users
+  user: state.users,
+  chatrooms: state.chatroomsReducer.chatrooms,
+  loading: state.chatroomsReducer.loading
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchChatrooms: () => dispatch(fetchChatrooms())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
