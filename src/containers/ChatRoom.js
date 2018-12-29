@@ -138,7 +138,13 @@ class ChatRoom extends Component {
   }
 
   deleteMessage = (msg) => {
-    this.messagesRef.child(msg.id).remove()
+    return this.messagesRef.child(msg.id).remove()
+  }
+
+  deleteChatroom = chatroom => {
+    firebaseDb.ref('chatrooms/' + chatroom.id).remove(
+      this.props.history.push('/')
+    )
   }
 
   onTextChange(e) {
@@ -269,7 +275,9 @@ class ChatRoom extends Component {
 
           <Hidden smDown>
             <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomDetails chatroom={this.state.chatroom} /></div>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
+                  <ChatRoomDetails chatroom={this.state.chatroom} onDelete={this.deleteChatroom}/>
+              </div>
               <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
             </Grid>
           </Hidden>
