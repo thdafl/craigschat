@@ -81,6 +81,10 @@ class ChatRoom extends Component {
       }))
     })
 
+    firebaseDb.ref('chatrooms/' + chatRoomId).on('value', (snapshot) => {
+      this.setState({chatroom: snapshot.val()})
+    })
+
     // fetch currect roomMembers before DOM is mounted and set them to currentRoomMembers state
     firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/').on('child_added', (snapshot) => { 
       const m = snapshot.val() 
@@ -134,7 +138,13 @@ class ChatRoom extends Component {
   }
 
   deleteMessage = (msg) => {
-    this.messagesRef.child(msg.id).remove()
+    return this.messagesRef.child(msg.id).remove()
+  }
+
+  deleteChatroom = chatroom => {
+    firebaseDb.ref('chatrooms/' + chatroom.id).remove(
+      this.props.history.push('/')
+    )
   }
 
   onTextChange(e) {
@@ -265,7 +275,14 @@ class ChatRoom extends Component {
 
           <Hidden smDown>
             <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomDetails /></div>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
+                  <ChatRoomDetails
+                    chatroom={this.state.chatroom}
+                    onDelete={this.deleteChatroom}
+                    editable={(this.props.user && this.props.user.id) === (this.state.chatroom && this.state.chatroom.owner.id)}
+                    onEdit={() => this.props.history.push(`${this.props.location.pathname}/edit`)}
+                  />
+              </div>
               <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
             </Grid>
           </Hidden>
