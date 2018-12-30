@@ -2,14 +2,15 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import { Card, Avatar, Button, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import CustomUploadButton from 'react-firebase-file-uploader/lib/CustomUploadButton';
 
-import {firebaseDb, firebaseAuth} from '../config/firebase'
-import { userLogout } from '../store/users/actions';
+import {firebaseDb, firebaseAuth, firebaseStorage} from '../config/firebase'
+import { userLogout, userUpdate } from '../store/users/actions';
 
 class UserProfile extends Component {
   state = {
     isEditting: false,
-    profile: {}
+    profile: null
   }
   
   deleteAccount = async () => {
@@ -33,8 +34,8 @@ class UserProfile extends Component {
   toggleEdit = () => {
     this.setState({
       isEditting: !this.state.isEditting,
-      profile: this.props.user.loginUser
-    })
+      profile: (this.state.profile || this.props.user.loginUser)
+    }, () => this.props.update(this.state.profile))
   }
 
   onFieldChange = (e) => {
@@ -46,6 +47,14 @@ class UserProfile extends Component {
 
     firebaseDb.ref('users/' + this.props.user.loginUser.id).set(this.state.profile, this.toggleEdit)
   }
+
+  handleAvatarChange = filename => {
+    firebaseStorage
+      .ref('avatars')
+      .child(filename)
+      .getDownloadURL()
+      .then(photoUrl => this.setState({profile: {...this.state.profile, photoUrl}}));
+  }
   
   render() {
     const {loginUser} = this.props.user
@@ -55,7 +64,18 @@ class UserProfile extends Component {
       <div className="App" style={{height: '100vh'}}>
         <div style={{width: '100%', paddingTop: 80}}>
           <Card style={{display: 'flex', padding: 20, flexDirection: 'row', margin: 'auto', maxWidth: 700}}>
-            <Avatar style={{width: '75px', height: '75px', marginRight: 40, top: 0}} src={loginUser.photoUrl} />
+            {isEditting ? (
+              <CustomUploadButton
+                hidden
+                name="avatar"
+                randomizeFilename
+                accept="image/*"
+                storageRef={firebaseStorage.ref('avatars')}
+                onUploadSuccess={this.handleAvatarChange}
+              >
+                <Avatar style={{width: '75px', height: '75px', marginRight: 40, top: 0, cursor: 'pointer'}} src={this.state.profile.photoUrl}/>
+              </CustomUploadButton>
+            ) : <Avatar style={{width: '75px', height: '75px', marginRight: 40, top: 0}} src={loginUser.photoUrl} />}
             <div style={{textAlign: 'left'}}>
               {isEditting ? (
                 <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={this.onFormSubmit}>
@@ -86,7 +106,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(userLogout())
+  logout: () => dispatch(userLogout()),
+  update: user => dispatch(userUpdate(user))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfile))
