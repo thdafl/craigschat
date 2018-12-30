@@ -55,7 +55,7 @@ class Home extends Component {
 
             <Grid item xs={12} sm={12} md={12} lg={9} style={{display: 'block'}}>
               <Grid container>
-                {(!this.props.loading) ? this.props.chatrooms.map((chatroom, id) => {
+                {(!this.props.loading) ? Object.values(this.props.chatrooms || {}).map((chatroom, id) => {
                   if(!chatroom.archived) {
                     return (
                       <Grid item xs={12} sm={6} md={4} lg={4} key={id} style={{display: 'block'}}>

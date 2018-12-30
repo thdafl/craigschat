@@ -14,7 +14,7 @@ const chatroomsReducer = (state = initialState, action) => {
     case FETCH_SUCCESS:
     return {
       ...state,
-      chatrooms: state.chatrooms.concat(action.chatroom),
+      chatrooms: action.chatroom,
       loading: false
     }
     case FETCH_TERMINATED:

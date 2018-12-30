@@ -13,25 +13,6 @@ class CreateChatRoom extends Component {
     tags: [],
   }
 
-  componentDidMount() {
-    const chatRoomId = this.props.match.params.id;
-    firebaseDb.ref('chatrooms/' + chatRoomId + '/messages/').on('child_added', (snapshot) => {
-      const m = snapshot.val()
-      let msgs = this.state.messages
-
-      msgs.push({
-        id: m.id,
-        text : m.text,
-        userName : m.userName,
-        timestamp : m.timestamp
-      })
-
-      this.setState({
-        messages : msgs
-      });
-    })
-  }
-
   onTextChange = (e) => {
     this.setState({[e.target.name]: e.target.value})
   }
@@ -49,7 +30,7 @@ class CreateChatRoom extends Component {
       this.props.history.push(`/chatroom/${key}`)
     })
 
-    this.setState({key: "", ownerName: "", description: ""})
+    this.setState({title: "", description: "", place: "", tags: []})
   }
   
   render() {
