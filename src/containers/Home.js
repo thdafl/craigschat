@@ -54,8 +54,8 @@ class Home extends Component {
     const {loginUser: user = {}} = this.props.user
     const {chatRooms} = this.state
 
-    const ownedRooms = chatRooms.filter(({owner}) => owner.id === user.id)
-    const joinedRooms = chatRooms.filter(({roommembers}) => roommembers[user.id])
+    const ownedRooms = chatRooms.filter(({owner}) => user && owner.id === user.id)
+    const joinedRooms = chatRooms.filter(({roommembers}) => user && roommembers[user.id])
     
     return (
       <div className="App" style={{display: 'flex', justifyContent: 'center', height: '100%', paddingLeft: '10%', paddingRight: '10%'}}>
@@ -64,16 +64,18 @@ class Home extends Component {
             <Hidden mdDown>
               <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <div style={{width: '95%', marginTop: '10px', position: 'sticky', top: '50px'}}>
-                  <Paper style={{padding: 18}}>
-                    <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'owner'})}>
-                      <Typography style={{fontSize: 20, marginRight: 10}}>{ownedRooms.length}</Typography>
-                      <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you own</Typography>
-                    </div>
-                    <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'joined'})}>
-                      <Typography style={{fontSize: 20, marginRight: 10}}>{joinedRooms.length}</Typography>
-                      <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you joined</Typography>
-                    </div>
-                  </Paper>
+                  {user && (
+                    <Paper style={{padding: 18}}>
+                      <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'owner'})}>
+                        <Typography style={{fontSize: 20, marginRight: 10}}>{ownedRooms.length}</Typography>
+                        <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you own</Typography>
+                      </div>
+                      <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'joined'})}>
+                        <Typography style={{fontSize: 20, marginRight: 10}}>{joinedRooms.length}</Typography>
+                        <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you joined</Typography>
+                      </div>
+                    </Paper>
+                  )}
                   <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '15px'}}>
                     <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>About</Link>
                     <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Terms and Conditions</Link>
