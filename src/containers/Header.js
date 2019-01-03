@@ -4,11 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withRouter, Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import Fab from '@material-ui/core/Fab';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Avatar, Fab, Button, Menu, MenuItem } from '@material-ui/core';
 
 class Header extends Component {
   constructor(props) {
@@ -109,7 +105,7 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee'}}>
+      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: 'white'}}>
         <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
           <div style={{display: 'flex', alignItems: 'center', fontSize: '15px'}}>
             NoNameYet
