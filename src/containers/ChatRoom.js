@@ -67,6 +67,8 @@ class ChatRoom extends Component {
     
           this.setState({
             messages : msgs.concat(m)
+          }, () => {
+            if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
           })
           new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
         })
@@ -98,8 +100,6 @@ class ChatRoom extends Component {
       
       this.setState({currentRoomMembers: crms}) 
     })
-
-    if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
   }
 
   componentWillUnmount() {
