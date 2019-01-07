@@ -56,7 +56,9 @@ const ListCard = ({onClick, owner, title, place, roommembers, classes}) => {
               <Typography style={{fontSize: 20, fontWeight: 600}}>{title}</Typography>
             </div>
             <div className={ownerInfoWrapper}>
-              <Avatar className={ownerAvatar} alt="user-avatar" src={owner.photoUrl} />
+              {getProfile(owner.id, user => (
+                <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
+              ))}
               <div style={{display: 'flex', flexDirection: 'column'}}>
                 <Typography className={ownerNameText}>Owner: {owner.name}</Typography>
                 <Typography className={ownerNameText}>Place: {place}</Typography>
