@@ -1,17 +1,37 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
+import Event from '@material-ui/icons/Event';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 
 const ChatRoomDetails = React.memo(({chatroom, editable, onDelete, onEdit}) => {
   return (
     <div>
-      <div>
-        {editable && <Button size='small' variant="outlined" color="primary" onClick={() => onEdit(chatroom)}>Edit Details</Button>}
-        {editable && <Button size='small' variant="outlined" color="secondary" onClick={() => onDelete(chatroom)}>Delete Chatroom</Button>}
+      <div style={{display: 'flex'}}>
+        {editable && 
+        <Tooltip title="Create Evenet">
+          <IconButton aria-label="Create Event">
+            <Event />
+          </IconButton>
+        </Tooltip>} 
+        {editable && 
+        <Tooltip title="Edit Details" onClick={() => onEdit(chatroom)}>
+          <IconButton aria-label="Edit Details">
+            <Edit />
+          </IconButton>
+        </Tooltip>} 
+        {editable && 
+        <Tooltip title="Delete ChatRoom" onClick={() => onDelete(chatroom)}>
+          <IconButton aria-label="Delete Chatroom">
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>}
       </div>
       {chatroom && (
-        <div style={{display: 'flex', flexDirection: 'column', textAlign: 'left'}}>  
-          <h2>{chatroom.title}</h2>
+        <div style={{display: 'flex', flexDirection: 'column', textAlign: 'left', paddingLeft: 15}}>  
+          <h2 style={{marginBlockStart: 5}}>{chatroom.title}</h2>
           <span>@{chatroom.place}</span>
           <p>{chatroom.description}</p>
           <div>

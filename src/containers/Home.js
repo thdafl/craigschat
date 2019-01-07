@@ -68,7 +68,7 @@ class Home extends Component {
           <div className={this.props.classes.jumbotronContents}>
             <Typography style={{fontSize: 50, fontWeight: 700}}>Chat. Build Community.</Typography>
             <Typography style={{fontSize: 17, fontWeight: 200, color: 'gray'}}>This service operates only in Tokyo now in Beta</Typography>
-            <Card style={{marginTop: 25}}>
+            <Card style={{marginTop: 20}}>
               <CardActionArea style={{height: '100%'}}>
                 <CardContent style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                   <Typography style={{display: 'flex', justifyContent: 'flex-start', fontSize: '20px', textAlign: 'start', fontWeight: 600}}>Come to say Hi and ask us any questions!</Typography>
@@ -106,7 +106,7 @@ class Home extends Component {
               </Grid>
             </Hidden>
 
-            <Grid item xs={12} sm={12} md={12} lg={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Grid item xs={12} sm={12} md={12} lg={7} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Grid container> 
                 {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : this.state.chatRooms).map((chatroom, id) => {
                   if(!chatroom.archived) {
@@ -137,7 +137,7 @@ class Home extends Component {
 }
 const styles = theme => ({
   jumbotronContents: {
-    paddingTop: 30,
+    paddingTop: 50,
     paddingLeft: '2%',
     paddingRight: '2%',
     justifyContent: 'center',

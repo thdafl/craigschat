@@ -1,11 +1,10 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
 const ChatRoomEvents = () => {
   return (
-    <div>
-      <div style={{padding: 5}}><Button size='small' variant="outlined" color="primary">Create a Event</Button></div>
+    <div style={{paddingLeft: 15}}>
+      <h2 style={{textAlign: 'left'}}>Scheduled Events</h2>
       <div>
         <div style={{display: 'flex', fontSize: 15, fontWeight: 100, padding:5}}>Nov. 1 - Greetings @CreatersCafe</div>
         <div style={{display: 'flex', fontSize: 15, fontWeight: 100, padding:5}}>Nov. 3 - Weekly Mtg @CreatersCafe</div>
