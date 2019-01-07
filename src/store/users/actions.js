@@ -4,6 +4,13 @@ export const userLogin = (user) => {
     user
 }}
 
+export const userUpdate = (user) => {
+  return {
+    type: 'USER_UPDATE',
+    user
+}}
+
+
 export const userLogout = () => {
   return {
     type: 'USER_LOGOUT'
