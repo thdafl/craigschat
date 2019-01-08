@@ -51,8 +51,7 @@ class ChatRoom extends Component {
     this.messagesRef = firebaseDb.ref('messages/' + chatRoomId)
     
     this.messagesRef.once('value', (snapshot) => { 
-      this.setState({ initialMessagesLength: snapshot.numChildren()})
-      this.messagesEnd.scrollIntoView({behavior: "instant"})    
+      this.setState({ initialMessagesLength: snapshot.numChildren()}, () => this.messagesEnd.scrollIntoView({behavior: "instant"}))
     })
 
     this.messagesRef.limitToFirst(1).once('value', (snapshot) => {
