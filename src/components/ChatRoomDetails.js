@@ -6,12 +6,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 
-const ChatRoomDetails = React.memo(({chatroom, editable, onDelete, onEdit}) => {
+const ChatRoomDetails = React.memo(({chatroom, editable, onDelete, onEdit, onCreateEvent }) => {
   return (
     <div>
       <div style={{display: 'flex'}}>
         {editable && 
-        <Tooltip title="Create Evenet">
+        <Tooltip title="Create Event" onClick={() => onCreateEvent(chatroom)}>
           <IconButton aria-label="Create Event">
             <Event />
           </IconButton>

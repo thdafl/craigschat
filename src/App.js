@@ -9,6 +9,7 @@ import ChatRoom from './containers/ChatRoom';
 import EditChatRoom from './containers/EditChatRoom'
 import UserProfile from './containers/UserProfile'
 import Header from './containers/Header'
+import EditEvent from "./containers/EditEvent.js";
 import './App.css';
 
 ReactGA.initialize('UA-130530759-1');
@@ -78,6 +79,7 @@ class App extends Component {
           <Route path='/chatroom/:id/edit' component={EditChatRoom} />
           <Route path='/chatroom/:id' component={ChatRoom} />
           <Route path="/new/chatroom" component={EditChatRoom}/>
+          <Route path="/event/:id" component={EditEvent} />
         </Switch>
       </div>
     );

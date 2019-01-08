@@ -38,7 +38,8 @@ class ChatRoom extends Component {
       text : "",
       messages : [],
       currentRoomMembers: [],
-      initialMessagesLength: null
+      initialMessagesLength: null,
+      events: [],
     }
 
     this.onTextChange = this.onTextChange.bind(this);
@@ -47,6 +48,31 @@ class ChatRoom extends Component {
 
   componentDidMount() {
     const {id: chatRoomId} = this.props.match.params;
+
+    this.eventsRef = firebaseDb.ref("events/" + chatRoomId);
+
+    this.eventsRef.orderByChild("sortDate").on("value", snapshot => {
+      if (snapshot.val()) {
+        let events = [];
+        snapshot.forEach(function (child) {
+          const item = child.val()
+          events.push({
+            date: item.date,
+            title: item.title,
+            venue: item.venue,
+            eventId: item.id,
+            details: item.details,
+            dateString: item.dateString
+          })
+        });
+
+        this.setState({
+          events
+        })
+      } else {
+        this.setState({events:[]})
+      }
+    });
 
     this.messagesRef = firebaseDb.ref('messages/' + chatRoomId)
     
@@ -104,6 +130,7 @@ class ChatRoom extends Component {
 
   componentWillUnmount() {
     this.messagesRef.off()
+    this.eventsRef.off()
   }
 
   componentDidUpdate(_, prevState) {
@@ -145,6 +172,17 @@ class ChatRoom extends Component {
     firebaseDb.ref('chatrooms/' + chatroom.id).remove(
       this.props.history.push('/')
     )
+  }
+
+  deleteEvent = id => {
+    const chatRoomId = this.props.match.params.id;
+    firebaseDb.ref("events/" + chatRoomId).child(id)
+      .remove()
+  }
+
+  updateEvent = event => {
+    const chatRoomId = this.props.match.params.id;
+    this.props.history.push("/event/" + chatRoomId, event)
   }
 
   onTextChange(e) {
@@ -281,9 +319,20 @@ class ChatRoom extends Component {
                     onDelete={this.deleteChatroom}
                     editable={(this.props.user && this.props.user.id) === (this.state.chatroom && this.state.chatroom.owner.id)}
                     onEdit={() => this.props.history.push(`${this.props.location.pathname}/edit`)}
+                    onCreateEvent={(chatroom) => this.props.history.push(`/event/${this.props.match.params.id}`)}
                   />
               </div>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}><ChatRoomEvents /></div>
+              <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
+              <ChatRoomEvents
+                  events={this.state.events}
+                  editable={
+                    (this.props.user && this.props.user.id) ===
+                    (this.state.chatroom && this.state.chatroom.owner.id)
+                  }
+                  onDelete={this.deleteEvent}
+                  onUpdate={this.updateEvent}
+                />
+              </div>
             </Grid>
           </Hidden>
         </Grid>
