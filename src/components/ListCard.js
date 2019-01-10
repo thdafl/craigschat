@@ -8,7 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
 
-const ListCard = ({onClick, owner, title, place, roommembers, classes}) => {
+const ListCard = ({onClick, owner, title, place, description, roommembers, classes}) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
   const renderAvatars = () => (
@@ -45,27 +45,36 @@ const ListCard = ({onClick, owner, title, place, roommembers, classes}) => {
 
   return (
     <Card className={cardContainer}>
-      <CardActionArea onClick={onClick} style={{height: 300}}>
+      <CardActionArea onClick={onClick} style={{height: '100%'}}>
           <CardMedia
             style={{height: 150}}
-            image="https://static.vecteezy.com/system/resources/previews/000/156/385/large_2x/vector-guys-at-a-bar-illustration.jpg"
+            image="https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"
             title="Contemplative Reptile"
-          />
-          <CardContent className={cardContent}>
-            <div style={{height: 60, textAlign: 'start'}}>
-              <Typography style={{fontSize: 20, fontWeight: 600}}>{title}</Typography>
-            </div>
-            <div className={ownerInfoWrapper}>
+          >
+          <div style={{height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+            <Typography style={{fontSize: 20, fontWeight: 600, color: '#eeeeee'}}>{title}</Typography>
+          </div>
+          <div className={ownerInfoWrapper}>
               {getProfile(owner.id, user => (
                 <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
               ))}
-              <div style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{display: 'flex', flexDirection: 'column', paddingLeft: 5}}>
                 <Typography className={ownerNameText}>Owner: {owner.name}</Typography>
                 <Typography className={ownerNameText}>Place: {place}</Typography>
               </div>
             </div>
+          </CardMedia>
+          <CardContent className={cardContent}>
+            <div style={{height: 85, textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+              <Typography style={{fontSize: 15, fontWeight: 200}}>{description}</Typography>
+            </div>
+           
             <div className={membersAvatarWrapper}>
               <div style={{display: 'flex'}}>{renderAvatars()}</div>
+            </div>
+
+            <div style={{textAlign: 'start', height: 20}}>
+              <Typography style={{fontSize: 12, fontWeight: 400, color: '#339933'}}>X members online now</Typography>
             </div>
         </CardContent>
       </CardActionArea>
@@ -76,18 +85,20 @@ const ListCard = ({onClick, owner, title, place, roommembers, classes}) => {
 const styles = theme => ({
   cardContainer: {
     width: '95%',
-    height: 300,
+    height: 320,
     margin: 10,
   },
   cardContent: {
-    height: 130,
+    height: 150,
     padding: 10,
     paddingLeft: 15,
     paddingRight: 15,
   },
   ownerInfoWrapper: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingLeft: 20,
+    marginTop: 10
   },
   ownerAvatar: {
     width: '35px',
@@ -96,7 +107,7 @@ const styles = theme => ({
   },
   ownerNameText: {
     fontSize: '13px',
-    color: 'gray',
+    color: '#eeeeee',
     textAlign: 'start',
     fontWeight: 200,
     marginRight: 5
