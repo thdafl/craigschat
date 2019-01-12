@@ -30,7 +30,7 @@ const MessageBubble = ({user, message, onDelete}) => (
         }
         <div style={{color: 'gray', fontSize: '10px', marginLeft: 10}}><TimeAgo date={moment(message.timestamp).toDate()} minPeriod={30}/></div>
       </div>
-      <div style={{textAlign: 'left', fontSize: '1.1rem', fontWeight: 100, wordBreak: 'break-all'}}>{message.text}</div>
+      <div style={{textAlign: 'left', fontSize: '1rem', fontWeight: 100, wordBreak: 'break-all'}}>{message.text}</div>
     </div>
     <div style={{marginLeft: 'auto'}}></div>
     {user && user.id === message.user.id && <span style={{cursor: 'pointer', color: 'red', fontSize: 10}} onClick={() => onDelete(message)}>Delete</span>}
