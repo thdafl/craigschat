@@ -8,7 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
 
-const ListCard = ({onClick, owner, title, place, description, roommembers, classes}) => {
+const ListCard = ({onClick, owner, title, place, description, roommembers, image, classes}) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
   const renderAvatars = () => (
@@ -48,7 +48,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, class
       <CardActionArea onClick={onClick} style={{height: '100%'}}>
           <CardMedia
             style={{height: 150}}
-            image="https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"
+            image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
             title="Contemplative Reptile"
           >
           <div style={{height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
@@ -109,7 +109,7 @@ const styles = theme => ({
     fontSize: '13px',
     color: '#eeeeee',
     textAlign: 'start',
-    fontWeight: 200,
+    fontWeight: 400,
     marginRight: 5
   },
   titleWrapper: {
