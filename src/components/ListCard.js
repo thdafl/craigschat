@@ -52,7 +52,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
             title="Contemplative Reptile"
           >
           <div style={{height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-            <Typography style={{fontSize: 20, fontWeight: 600, color: '#eeeeee'}}>{title}</Typography>
+            <Typography style={{fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)'}}>{title}</Typography>
           </div>
           <div className={ownerInfoWrapper}>
               {getProfile(owner.id, user => (
@@ -106,11 +106,12 @@ const styles = theme => ({
     marginRight: 5
   },
   ownerNameText: {
-    fontSize: '13px',
-    color: '#eeeeee',
+    fontSize: '15px',
+    color: 'white',
     textAlign: 'start',
     fontWeight: 400,
-    marginRight: 5
+    marginRight: 5,
+    textShadow: '0 1px 3px rgba(0,0,0,0.8)'
   },
   titleWrapper: {
     overflow: 'hidden',
