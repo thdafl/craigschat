@@ -34,7 +34,8 @@ class Home extends Component {
         place: ctr.place,
         description : ctr.description,
         roommembers: ctr.roommembers,
-        archived: ctr.archived
+        archived: ctr.archived,
+        image: ctr.image
       })
 
       this.setState({

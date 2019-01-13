@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import ChipInput from 'material-ui-chip-input'
-
-import { firebaseDb } from '../config/firebase.js';
-import { TextField, Card, Button } from '@material-ui/core';
+import { firebaseDb, firebaseStorage } from '../config/firebase.js';
+import { TextField, Card, Button, CircularProgress } from '@material-ui/core';
+import FileUploader from "react-firebase-file-uploader";
 
 class EditChatRoom extends Component {
   state = {
+    image: '',
     title: '',
     description: '',
     place: '',
     tags: [],
+    imageSaving: false
   }
 
   componentDidMount() {
@@ -37,19 +39,44 @@ class EditChatRoom extends Component {
       "id": id,
       "owner" : this.props.user.loginUser,
       ...this.state
-    }).then(() => {
-      console.log('id: ', id)
-      
+    }).then(() => {    
       firebaseDb.ref('chatrooms/' + id + '/roommembers/' + this.props.user.loginUser.id)
         .set(this.props.user.loginUser, () => this.props.history.push(`/chatroom/${id}`))
       
     })
+  }
+
+  handleUploadStart = () => {
+   this.setState({ imageSaving: true })
+  }
+
+  handleImageChange = filename => {
+    firebaseStorage
+      .ref('chatroomImage')
+      .child(filename)
+      .getDownloadURL()
+      .then(photoUrl => this.setState({image: photoUrl}))
+    this.setState({ imageSaving: false })
   }
   
   render() {
     return (
       <div style={{width: '100%', paddingTop: 80}}>
         <Card style={{margin: 'auto', width: 600, padding: 20}}>
+          <div>
+            <label style={{backgroundColor: 'steelblue', color: 'white', padding: 10, borderRadius: 4, pointer: 'cursor'}}>
+                {(this.state.imageSaving) ? <CircularProgress size={15} /> : "Select Chatroom Image"}
+                <FileUploader
+                  hidden
+                  accept="image/*"
+                  storageRef={firebaseStorage.ref('chatroomImage')}
+                  onUploadStart={this.handleUploadStart}
+                  // onUploadError={this.handleUploadError}
+                  onUploadSuccess={this.handleImageChange}
+                />
+            </label>
+            <div style={{paddingTop: 20}}>{(this.state.image) ? <img border="0" src={this.state.image} width="50%" alt="chatroomimage"></img>: "No file selected"}</div>
+          </div>
           <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={this.onFormSubmit}>
             <TextField
               name="title"

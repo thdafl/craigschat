@@ -8,7 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
 
-const ListCard = ({onClick, owner, title, place, description, roommembers, classes}) => {
+const ListCard = ({onClick, owner, title, place, description, roommembers, image, classes}) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
   const renderAvatars = () => (
@@ -48,11 +48,11 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, class
       <CardActionArea onClick={onClick} style={{height: '100%'}}>
           <CardMedia
             style={{height: 150}}
-            image="https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"
+            image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
             title="Contemplative Reptile"
           >
           <div style={{height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-            <Typography style={{fontSize: 20, fontWeight: 600, color: '#eeeeee'}}>{title}</Typography>
+            <Typography style={{fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)'}}>{title}</Typography>
           </div>
           <div className={ownerInfoWrapper}>
               {getProfile(owner.id, user => (
@@ -106,11 +106,12 @@ const styles = theme => ({
     marginRight: 5
   },
   ownerNameText: {
-    fontSize: '13px',
-    color: '#eeeeee',
+    fontSize: '15px',
+    color: 'white',
     textAlign: 'start',
-    fontWeight: 200,
-    marginRight: 5
+    fontWeight: 400,
+    marginRight: 5,
+    textShadow: '0 1px 3px rgba(0,0,0,0.8)'
   },
   titleWrapper: {
     overflow: 'hidden',

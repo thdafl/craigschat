@@ -6,7 +6,10 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
-import { Badge, withStyles, CircularProgress, Button, Popover } from '@material-ui/core';
+import { Badge, withStyles, CircularProgress, Popover } from '@material-ui/core';
+import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -248,15 +251,14 @@ class ChatRoom extends Component {
           <Hidden xsDown>
             <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{display: 'flex', flexDirection: 'column', paddingTop: '70px', maxWidth: '80%'}}>
-                <div style={{fontWeight: 100, fontSize: '15px', marginBottom: '10px'}}>Room Members</div>
                 {this.state.currentRoomMembers.map((m) => 
                   getProfile(m.id, user => (
                     (user.deleted) ? 
                     null :
                     <Badge badgeContent="" color={user.online ? 'primary' : 'error'} classes={{ badge: this.props.classes.badge }}>
                       <div key={user.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
-                        <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px'}}/>
-                        <div style={{wordBreak: 'break-all'}}>{user.name}</div>
+                        <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem'}}/>
+                        <div style={{wordBreak: 'break-all', fontSize: '0.9rem'}}>{user.name}</div>
                       </div>
                     </Badge>
                   )
@@ -283,16 +285,21 @@ class ChatRoom extends Component {
                 )}
               </InfiniteScroll>
             </div>
-            <form onSubmit={this.onButtonClick} style={{display: 'flex', height: '10%', width: '90%',paddingBottom: '20px'}}>
+            <form onSubmit={this.onButtonClick} autocomplete="off" style={{display: 'flex', flexDirection: 'center', alignItems: 'center', width: '90%'}}>
               <TextField
                 id="comment-box"
                 margin="normal"
                 variant="outlined"
                 onChange={this.onTextChange}
                 value={this.state.text}
-                style={{width: '100%'}}
+                style={{width: '100%', height: '3rem', marginTop: '8px'}}
               />
-              <Button onClick={this.toggleEmoji}>Emoji</Button>
+              {/* <Button onClick={this.toggleEmoji}>Emoji</Button> */}
+              <Tooltip title="Emoji" style={{height: '3rem'}}>
+                <IconButton aria-label="Edit Details" onClick={this.toggleEmoji}>
+                  <EmojiIcon />
+                </IconButton>
+              </Tooltip>
               <Popover
                 open={Boolean(this.state.emojiAnchor)}
                 anchorEl={this.state.emojiAnchor}
