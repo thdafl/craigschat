@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { firebaseDb } from '../config/firebase.js';
+import CustomUploadButton from 'react-firebase-file-uploader/lib/CustomUploadButton';
+import { firebaseStorage } from '../config/firebase.js';
 import {Picker} from 'emoji-mart'
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -8,8 +10,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import { Badge, withStyles, CircularProgress, Popover } from '@material-ui/core';
 import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
+import PhotoIcon from '@material-ui/icons/AddAPhoto';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -43,6 +45,7 @@ class ChatRoom extends Component {
       currentRoomMembers: [],
       initialMessagesLength: null,
       events: [],
+      imageUploading: false
     }
 
     this.onTextChange = this.onTextChange.bind(this);
@@ -99,7 +102,7 @@ class ChatRoom extends Component {
           }, () => {
             if (this.messagesEnd) this.messagesEnd.scrollIntoView({behavior: "instant"})
           })
-          new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
+          // new Audio("https://firebasestorage.googleapis.com/v0/b/craigschat-230e6.appspot.com/o/water-drop2.mp3?alt=media&token=9573135c-62b9-40ae-b082-61f443d39a87").play()
         })
       })
     })
@@ -193,6 +196,38 @@ class ChatRoom extends Component {
       text : e.target.value,
     });
   }
+
+  handleUploadStart = () => {
+    this.setState({ imageUploading: true })
+  }
+
+  handleUploadError = () => {
+    this.setState({ imageUploading: false })
+    alert('Upload failed. Please try again.')
+  }
+
+  handleUploadSuccess = filename => {
+    firebaseStorage
+    .ref('chatroomImage')
+    .child(filename)
+    .getDownloadURL()
+    .then(photoUrl => {
+      console.log("*", photoUrl)
+      const key = firebaseDb.ref('messages/').push().key;
+      const chatRoomId = this.props.match.params.id;
+      const guest = {
+        name: "Guest",
+        photoUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
+      }
+      firebaseDb.ref('messages/' + chatRoomId + '/' + key).set({
+        "id": key,
+        "user" : (this.props.user) ? this.props.user : guest,
+        "image" : photoUrl,
+        "timestamp": moment().toISOString()
+      })
+      this.setState({ imageUploading: false }
+    )
+  })}
 
   onButtonClick(e) {
     e.preventDefault();
@@ -294,27 +329,40 @@ class ChatRoom extends Component {
                 value={this.state.text}
                 style={{width: '100%', height: '3rem', marginTop: '8px'}}
               />
-              {/* <Button onClick={this.toggleEmoji}>Emoji</Button> */}
-              <Tooltip title="Emoji" style={{height: '3rem'}}>
+              
+              <div style={{display: 'flex', paddingLeft: '10px'}}>
                 <IconButton aria-label="Edit Details" onClick={this.toggleEmoji}>
                   <EmojiIcon />
                 </IconButton>
-              </Tooltip>
-              <Popover
-                open={Boolean(this.state.emojiAnchor)}
-                anchorEl={this.state.emojiAnchor}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                onClose={this.toggleEmoji}
-              >
-                <Picker onSelect={({native}) => this.setState(({text}) => ({text: text + native}))} native/>
-              </Popover>
+                <Popover
+                  open={Boolean(this.state.emojiAnchor)}
+                  anchorEl={this.state.emojiAnchor}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  onClose={this.toggleEmoji}
+                >
+                  <Picker onSelect={({native}) => this.setState(({text}) => ({text: text + native}))} native/>
+                </Popover>
+
+                <CustomUploadButton
+                  accept="image/*"
+                  storageRef={firebaseStorage.ref('messageImage')}
+                  onUploadStart={this.handleUploadStart}
+                  onUploadError={this.handleUploadError}
+                  onUploadSuccess={this.handleUploadSuccess}
+                  onProgress={this.handleProgress}
+                  style={{display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'gray'}}
+                >
+                  {(this.state.imageUploading) ? <CircularProgress size={20} /> : <PhotoIcon />}
+                </CustomUploadButton>
+                
+              </div>
             </form>
           </Grid>
 
