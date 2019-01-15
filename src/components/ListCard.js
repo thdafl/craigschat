@@ -47,7 +47,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
     <Card className={cardContainer}>
       <CardActionArea onClick={onClick} style={{height: '100%'}}>
           <CardMedia
-            style={{height: 150}}
+            style={{height: '70%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}
             image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
             title="Contemplative Reptile"
           >
@@ -65,16 +65,19 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
             </div>
           </CardMedia>
           <CardContent className={cardContent}>
-            <div style={{height: 85, textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-              <Typography style={{fontSize: 15, fontWeight: 200}}>{description}</Typography>
-            </div>
-           
             <div className={membersAvatarWrapper}>
               <div style={{display: 'flex'}}>{renderAvatars()}</div>
             </div>
 
-            <div style={{textAlign: 'start', height: 20}}>
-              <Typography style={{fontSize: 12, fontWeight: 400, color: '#339933'}}>X members online now</Typography>
+            <div style={{display: 'flex', textAlign: 'start', height: 20}}>
+              <div style={{display: 'flex', paddingRight: 5}}>
+                <span role="img" aria-label="sheep">🔮</span>
+                <Typography style={{fontSize: 13, fontWeight: 600, color: 'black', paddingLeft: 3}}>2 Online</Typography>
+              </div>
+              <div style={{display: 'flex'}}>
+                <span role="img" aria-label="sheep">💡</span>
+                <Typography style={{fontSize: 13, fontWeight: 600, color: 'black', paddingLeft: 3}}>11 days ago</Typography>
+              </div>
             </div>
         </CardContent>
       </CardActionArea>
@@ -84,12 +87,12 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
 
 const styles = theme => ({
   cardContainer: {
-    width: '95%',
-    height: 320,
+    width: '100%',
     margin: 10,
+    // borderRadius: 0,
+    boxShadow: 'none'
   },
   cardContent: {
-    height: 150,
     padding: 10,
     paddingLeft: 15,
     paddingRight: 15,
@@ -97,19 +100,18 @@ const styles = theme => ({
   ownerInfoWrapper: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: 20,
-    marginTop: 10
+    padding: '10px 20px 10px 20px',
   },
   ownerAvatar: {
-    width: '35px',
-    height: '35px',
+    width: '2rem',
+    height: '2rem',
     marginRight: 5
   },
   ownerNameText: {
-    fontSize: '15px',
+    fontSize: '13px',
     color: 'white',
     textAlign: 'start',
-    fontWeight: 400,
+    fontWeight: 600,
     marginRight: 5,
     textShadow: '0 1px 3px rgba(0,0,0,0.8)'
   },
@@ -132,7 +134,7 @@ const styles = theme => ({
   membersAvatarWrapper: {
     display: 'flex',
     alignItems: 'center',
-    height: 40,
+    paddingBottom: 5, 
   },
   membersAvatar: {
     width: '25px',
