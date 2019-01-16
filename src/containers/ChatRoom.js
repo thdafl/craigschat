@@ -208,7 +208,7 @@ class ChatRoom extends Component {
 
   handleUploadSuccess = filename => {
     firebaseStorage
-    .ref('chatroomImage')
+    .ref('messageImage')
     .child(filename)
     .getDownloadURL()
     .then(photoUrl => {
