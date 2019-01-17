@@ -57,14 +57,9 @@ class Home extends Component {
     
     return (
       <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%'}}>
-        <div className={this.props.classes.jumbotronContents}>
-          <Typography style={{fontSize: '3rem', fontWeight: 700}}>Chat. Build Community.</Typography>
-          <Typography style={{fontSize: '1rem', fontWeight: 200, color: 'gray'}}>This service operates only in Tokyo now in Beta</Typography>
-        </div>
-
-        <div style={{width: '100%', paddingTop: 20}}>
+        <div style={{width: '100%', paddingTop: 80}}>
           <Grid container style={{display: 'flex', justifyContent: 'center'}}>
-            <Grid item xs={12} sm={12} md={12} lg={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Grid item xs={12} sm={12} md={12} lg={7} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Grid container> 
                 {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : this.state.chatRooms).map((chatroom, id) => {
                   if(!chatroom.archived) {
@@ -88,20 +83,36 @@ class Home extends Component {
             </Grid>
 
             <Hidden mdDown>
-              <Grid item xs={12} sm={12} md={4} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <div style={{width: '95%', marginTop: '10px', position: 'sticky', top: '50px'}}>
-                  {user && (
-                    <Card raised={false} style={{padding: 18}}>
-                      <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'owner'})}>
-                        <Typography style={{fontSize: 20, marginRight: 10}}>{ownedRooms.length}</Typography>
+                  {(user) ? 
+                    <Card raised={false} style={{padding: '2rem'}}>
+                      <div style={{display: 'flex'}}>
+                        <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem'}}>Welcome Back</Typography>
+                        <span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 🤙 </span>
+                      </div>
+                      <div style={{display: 'flex', alignItems: 'flex-end', paddingTop: '0.5rem'}} onClick={() => this.setState({display: 'owner'})}>
+                        <Typography style={{fontSize: 20, fontWeight: 700, marginRight: 10}}>{ownedRooms.length}</Typography>
                         <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you own</Typography>
                       </div>
-                      <div style={{display: 'flex', alignItems: 'flex-end', padding: 3}} onClick={() => this.setState({display: 'joined'})}>
-                        <Typography style={{fontSize: 20, marginRight: 10}}>{joinedRooms.length}</Typography>
+                      <div style={{display: 'flex', alignItems: 'flex-end'}} onClick={() => this.setState({display: 'joined'})}>
+                        <Typography style={{fontSize: 20, fontWeight: 700, marginRight: 10}}>{joinedRooms.length}</Typography>
                         <Typography style={{fontSize: 12, fontWeight: 100, color: 'gray', paddingBottom: 3}}>Chatrooms you joined</Typography>
                       </div>
                     </Card>
-                  )}
+                  :  
+                  <Card raised={false} style={{padding: '2rem'}}>
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                      <div style={{display: 'flex'}}>
+                        <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem'}}>Welcome </Typography>
+                        <span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 👋 </span>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                        <Typography style={{textAlign: 'start',fontSize: '1rem', fontWeight: 600, paddingTop: '1rem', color: 'gray'}}>Join Us, chat, and build Communities!</Typography>
+                      </div>
+                    </div>
+                  </Card>
+                  }
                   <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '15px'}}>
                     <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>About</Link>
                     <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Terms and Conditions</Link>

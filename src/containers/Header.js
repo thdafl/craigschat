@@ -51,7 +51,6 @@ class Header extends Component {
             onClick={this.onClickMenuOpen}
             size="small"
             disableRipple
-            // style={{textTransform: 'none', fontWeight: 800, border: '2px solid rgba(0, 18 ,31 ,0.7)', color: 'rgba(0, 18 ,31 ,0.7)'}}
           >
             Signin / Login
           </Button>
@@ -105,7 +104,7 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee'}}>
+      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee', borderBottom: '1px solid #eeeeee'}}>
         <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
           <div style={{display: 'flex', alignItems: 'center', fontSize: '15px'}}>
             NoNameYet
