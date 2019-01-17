@@ -8,14 +8,14 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
-import { Badge, withStyles, CircularProgress, Popover } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { withStyles, CircularProgress, Popover, Typography, Fab } from '@material-ui/core';
 import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import PhotoIcon from '@material-ui/icons/AddAPhoto';
 import IconButton from '@material-ui/core/IconButton';
-import { Link } from 'react-router-dom';
+import Circle from '@material-ui/icons/FiberManualRecord';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
-import ChatRoomDetails from '../components/ChatRoomDetails';
 import ChatRoomEvents from '../components/ChatRoomEvents';
 
 import 'emoji-mart/css/emoji-mart.css'
@@ -45,6 +45,7 @@ class ChatRoom extends Component {
       currentRoomMembers: [],
       initialMessagesLength: null,
       events: [],
+      chatroom: null,
       imageUploading: false
     }
 
@@ -284,26 +285,61 @@ class ChatRoom extends Component {
         <Grid container style={{height: '100%', position: 'fixed'}}> 
           
           <Hidden xsDown>
-            <Grid item sm={2} md={2} lg={2} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{display: 'flex', flexDirection: 'column', paddingTop: '70px', maxWidth: '80%'}}>
+            <Grid item md={4} lg={4} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
+              <div style={{display: 'flex', width: '100%', alignItems: 'center', height: 64, paddingLeft: 40}}>
+                <span role="img" aria-label="logo" style={{fontSize: '25px'}}>🤘</span>
+              </div>
+              <div style={{width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingBottom: 15}}>
+                <Typography style={{color: 'white', fontSize: 30, fontWeight: 600, textAlign: 'start', lineHeight: '2rem', paddingBottom: 10}}>{(this.state.chatroom) && this.state.chatroom.title}</Typography>
+                <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start'}}>{(this.state.chatroom) && this.state.chatroom.description}</Typography>
+              </div>
+
+              <div style={{display: 'flex', width: '90%', flexWrap: 'wrap', paddingBottom: 30}}>
                 {this.state.currentRoomMembers.map((m) => 
                   getProfile(m.id, user => (
                     (user.deleted) ? 
                     null :
-                    <Badge badgeContent="" color={user.online ? 'primary' : 'error'} classes={{ badge: this.props.classes.badge }}>
-                      <div key={user.id} style={{display: 'flex', alignItems: 'center', margin: '5px'}}>
-                        <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem'}}/>
-                        <div style={{wordBreak: 'break-all', fontSize: '0.9rem'}}>{user.name}</div>
-                      </div>
-                    </Badge>
+                    <div style={{position: 'relative'}}>
+                      <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
+                      {user.online ? 
+                        <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
+                        : <div style={{position: 'absolute', top: -3, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
+                      }
+                    </div>
                   )
                 ))}
-                <Link to="/" style={{marginTop: '15px'}}>Back to Home</Link>
+              </div>
+              <div style={{width: '90%'}}>
+                <ChatRoomEvents
+                  events={this.state.events}
+                  editable={
+                    (this.props.user && this.props.user.id) ===
+                    (this.state.chatroom && this.state.chatroom.owner.id)
+                  }
+                  onDelete={this.deleteEvent}
+                  onUpdate={this.updateEvent}
+                />
               </div>
             </Grid>
           </Hidden>
 
-          <Grid item xs={12} sm={10} md={7} lg={7} style={{paddingTop: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
+          <Grid item xs={12} sm={12} md={8} lg={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%', backgroundColor: 'white'}}>
+            <div style={{display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: 64, borderBottom: '1px solid #eeeeee'}}>
+              <div style={{display: 'flex', paddingLeft: 30, fontSize: 30}}>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🐵 </span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>111</Typography></div>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🎒 </span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>222</Typography></div>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">✌️</span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>333</Typography></div>
+              </div>
+              {(this.props.user) ? 
+              <Link to="/user" style={{paddingRight: 30}}>
+                <Fab size='small' disableRipple>
+                  <Avatar 
+                    alt="user avatar"
+                    src={(this.props.user) && this.props.user.photoUrl}
+                  />
+                </Fab>
+              </Link> : null}
+            </div>
             <div id="chatbox" style={{height: '90%', width: '100%', overflow: 'auto'}}>
               <InfiniteScroll
                 pageStart={0}
@@ -320,7 +356,7 @@ class ChatRoom extends Component {
                 )}
               </InfiniteScroll>
             </div>
-            <form onSubmit={this.onButtonClick} autocomplete="off" style={{display: 'flex', flexDirection: 'center', alignItems: 'center', width: '90%'}}>
+            <form onSubmit={this.onButtonClick} autocomplete="off" style={{display: 'flex', flexDirection: 'center', alignItems: 'center', width: '90%', paddingBottom: 10}}>
               <TextField
                 id="comment-box"
                 margin="normal"
@@ -365,31 +401,6 @@ class ChatRoom extends Component {
               </div>
             </form>
           </Grid>
-
-          <Hidden smDown>
-            <Grid item md={3} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 50, paddingBottom: 40}}>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
-                  <ChatRoomDetails
-                    chatroom={this.state.chatroom}
-                    onDelete={this.deleteChatroom}
-                    editable={(this.props.user && this.props.user.id) === (this.state.chatroom && this.state.chatroom.owner.id)}
-                    onEdit={() => this.props.history.push(`${this.props.location.pathname}/edit`)}
-                    onCreateEvent={(chatroom) => this.props.history.push(`/event/${this.props.match.params.id}`)}
-                  />
-              </div>
-              <div style={{width: '90%', height: '50%', overflow: 'auto'}}>
-              <ChatRoomEvents
-                  events={this.state.events}
-                  editable={
-                    (this.props.user && this.props.user.id) ===
-                    (this.state.chatroom && this.state.chatroom.owner.id)
-                  }
-                  onDelete={this.deleteEvent}
-                  onUpdate={this.updateEvent}
-                />
-              </div>
-            </Grid>
-          </Hidden>
         </Grid>
          
       </div>

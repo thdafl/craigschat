@@ -28,15 +28,14 @@ const MessageBubble = ({user, message, onDelete}) => (
             }
           })
         }
-        <div style={{color: 'gray', fontSize: '10px', marginLeft: 10}}><TimeAgo date={moment(message.timestamp).toDate()} minPeriod={30}/></div>
+        <div style={{color: 'gray', fontSize: '10px', marginLeft: 10, paddingRight: 10}}><TimeAgo date={moment(message.timestamp).toDate()} minPeriod={30}/></div>
+        {user && user.id === message.user.id && <span style={{cursor: 'pointer', color: 'red', fontSize: 10}} onClick={() => onDelete(message)}>Delete</span>}
       </div>
       {(message.text) && <div style={{textAlign: 'left', fontSize: '1rem', fontWeight: 100, wordBreak: 'break-all'}}>{message.text}</div>}
-      {(message.image) && <div style={{textAlign: 'left', fontSize: '1rem', fontWeight: 100, wordBreak: 'break-all'}}>
+      {(message.image) && <div style={{textAlign: 'left'}}>
         <img src={message.image} width="50%" alt="messageImage" style={{border: 'solid 1px gray'}}></img>
       </div>}
     </div>
-    <div style={{marginLeft: 'auto'}}></div>
-    {user && user.id === message.user.id && <span style={{cursor: 'pointer', color: 'red', fontSize: 10}} onClick={() => onDelete(message)}>Delete</span>}
   </div>
 )
 

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import '../App.css';
 import { firebaseDb } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
+import Header from './Header';
 import ListCard from '../components/ListCard';
 import { Typography, Card, Grid, Hidden, withStyles } from '@material-ui/core';
 
@@ -57,6 +58,7 @@ class Home extends Component {
     
     return (
       <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%'}}>
+        <Header user={this.props.user.loginUser} />
         <div style={{width: '100%', paddingTop: 80}}>
           <Grid container style={{display: 'flex', justifyContent: 'center'}}>
             <Grid item xs={12} sm={12} md={12} lg={7} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>

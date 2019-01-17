@@ -12,19 +12,20 @@ import Chip from '@material-ui/core/Chip';
 const ListCard = ({onClick, owner, title, place, description, roommembers, image, tags, classes}) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
-  // const renderAvatars = () => (
-  //   Object.keys(roommembers).map(id => 
-  //     getProfile(id, user => (
-  //       (user.deleted) ? null :
-  //       <Avatar
-  //         key={id}
-  //         className={membersAvatar}
-  //         alt={user.name}
-  //         src={user.photoUrl}
-  //       />
-  //     ))
-  //   )
-  // )
+  const renderAvatars = () => (
+    Object.keys(roommembers).map(id => 
+      getProfile(id, user => (
+        (user.deleted) ? null :
+        <Avatar
+          key={id}
+          className={membersAvatar}
+          alt={user.name}
+          src={user.photoUrl}
+          style={{borderWidth: 2, borderStyle: 'solid', borderColor: 'rgb(255, 255, 255)'}}
+        />
+      ))
+    )
+  )
 
   const renderTags = () => {
     const tgs = [];
@@ -54,9 +55,10 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
                 <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
               ))}
               <div className={membersAvatarWrapper}>
-                <Chip label={`🐵 ${Object.keys(roommembers).length}`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
+                <div style={{display: 'flex'}}>{renderAvatars()}</div>
+                {/* <Chip label={`🐵 ${Object.keys(roommembers).length}`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
                 <Chip label={`🎒 12`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
-                <Chip label={`✌️ 5`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
+                {/* <Chip label={`✌️ 5`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
               </div>
             </div>
           </CardMedia>
@@ -124,7 +126,9 @@ const styles = theme => ({
   membersAvatarWrapper: {
     display: 'flex',
     alignItems: 'flex-end',
-    paddingTop: 5
+    width: '100%',
+    paddingTop: 5,
+    justifyContent: 'space-between'
   },
   membersAvatar: {
     width: '20px',
