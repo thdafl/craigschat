@@ -104,10 +104,10 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="fixed" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee', borderBottom: '1px solid #eeeeee'}}>
-        <Toolbar variant="dense" style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
-          <div style={{display: 'flex', alignItems: 'center', fontSize: '15px'}}>
-            NoNameYet
+      <AppBar position="absolute" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee', borderBottom: '1px solid #eeeeee'}}>
+        <Toolbar style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
+          <div style={{display: 'flex', alignItems: 'center', fontSize: '25px'}}>
+            <span role="img" aria-label="logo">🤘</span>
           </div>
 
           <div style={{display: 'flex'}}>

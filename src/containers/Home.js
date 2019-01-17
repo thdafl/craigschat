@@ -86,7 +86,7 @@ class Home extends Component {
               <Grid item xs={12} sm={12} md={4} lg={3} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <div style={{width: '95%', marginTop: '10px', position: 'sticky', top: '50px'}}>
                   {(user) ? 
-                    <Card raised={false} style={{padding: '2rem'}}>
+                    <Card style={{padding: '2rem', boxShadow: 'none'}}>
                       <div style={{display: 'flex'}}>
                         <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem'}}>Welcome Back</Typography>
                         <span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 🤙 </span>
@@ -101,7 +101,7 @@ class Home extends Component {
                       </div>
                     </Card>
                   :  
-                  <Card raised={false} style={{padding: '2rem'}}>
+                  <Card raised={false} style={{padding: '2rem', boxShadow: 'none'}}>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                       <div style={{display: 'flex'}}>
                         <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem'}}>Welcome </Typography>
