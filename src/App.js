@@ -8,7 +8,6 @@ import Home from './containers/Home';
 import ChatRoom from './containers/ChatRoom';
 import EditChatRoom from './containers/EditChatRoom'
 import UserProfile from './containers/UserProfile'
-import Header from './containers/Header'
 import EditEvent from "./containers/EditEvent.js";
 import './App.css';
 
@@ -72,7 +71,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header user={this.props.user} />
         <Switch>
           <Route path='/' component={Home} exact={true} />
           <Route path="/user/:id?" component={UserProfile}/>

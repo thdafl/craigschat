@@ -7,8 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
+import Chip from '@material-ui/core/Chip';
 
-const ListCard = ({onClick, owner, title, place, description, roommembers, image, classes}) => {
+const ListCard = ({onClick, owner, title, place, description, roommembers, image, tags, classes}) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
   const renderAvatars = () => (
@@ -20,28 +21,23 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
           className={membersAvatar}
           alt={user.name}
           src={user.photoUrl}
+          style={{borderWidth: 2, borderStyle: 'solid', borderColor: 'rgb(255, 255, 255)'}}
         />
       ))
     )
   )
 
-  // const renderTags = () => {
-  //   const tgs = [];
-  //   if (tags) {
-  //     tags.map((t) => 
-  //       tgs.push(
-  //         <Chip 
-  //           key={t} 
-  //           label={"#" + t}
-  //           className={categoryTag}
-  //           color="primary"
-  //           variant="outlined"
-  //         />
-  //       )
-  //     )
-  //   }
-  //   return tgs;
-  // }
+  const renderTags = () => {
+    const tgs = [];
+    if (tags) {
+      tags.map((t) => 
+        tgs.push(
+          <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3}} />
+        )
+      )
+    }
+    return tgs;
+  }
 
   return (
     <Card className={cardContainer}>
@@ -58,27 +54,22 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
               {getProfile(owner.id, user => (
                 <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
               ))}
-              <div style={{display: 'flex', flexDirection: 'column', paddingLeft: 5}}>
-                <Typography className={ownerNameText}>Owner: {owner.name}</Typography>
-                <Typography className={ownerNameText}>Place: {place}</Typography>
+              <div className={membersAvatarWrapper}>
+                <div style={{display: 'flex'}}>{renderAvatars()}</div>
+                {/* <Chip label={`🐵 ${Object.keys(roommembers).length}`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
+                <Chip label={`🎒 12`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
+                {/* <Chip label={`✌️ 5`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
               </div>
             </div>
           </CardMedia>
-          <CardContent className={cardContent}>
-            <div className={membersAvatarWrapper}>
-              <div style={{display: 'flex'}}>{renderAvatars()}</div>
-            </div>
 
-            <div style={{display: 'flex', textAlign: 'start', height: 60, overflow: 'hidden', textOverflow: 'ellipsis'}}>
-              <Typography style={{fontSize: 13, fontWeight: 600, color: 'rgb(72, 72, 72)', paddingLeft: 3}}>{description}</Typography>
-              {/* <div style={{display: 'flex', paddingRight: 5}}>
-                <span role="img" aria-label="sheep">🔮</span>
-                <Typography style={{fontSize: 13, fontWeight: 600, color: 'black', paddingLeft: 3}}>2 Online</Typography>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span role="img" aria-label="sheep">💡</span>
-                <Typography style={{fontSize: 13, fontWeight: 600, color: 'black', paddingLeft: 3}}>11 days ago</Typography>
-              </div> */}
+          <CardContent className={cardContent}>
+            <div style={{display: 'flex', textAlign: 'start', height: 60, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis'}}>
+              <Typography style={{fontSize: 14, fontWeight: 700, color: 'rgb(72, 72, 72)', paddingLeft: 3}}>{description}</Typography>
+            </div>
+            <div style={{display: 'flex', textAlign: 'start', height: 30, overflow: 'hidden', textOverflow: 'ellipsis'}}>
+              <Chip label={place} style={{height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3}} />
+              {renderTags()}
             </div>
         </CardContent>
       </CardActionArea>
@@ -96,7 +87,7 @@ const styles = theme => ({
     padding: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    height: '90px'
+    height: 95
   },
   ownerInfoWrapper: {
     display: 'flex',
@@ -134,12 +125,14 @@ const styles = theme => ({
   },
   membersAvatarWrapper: {
     display: 'flex',
-    alignItems: 'center',
-    paddingBottom: 5, 
+    alignItems: 'flex-end',
+    width: '100%',
+    paddingTop: 5,
+    justifyContent: 'space-between'
   },
   membersAvatar: {
-    width: '25px',
-    height: '25px'
+    width: '20px',
+    height: '20px'
   },
 });
 

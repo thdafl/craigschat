@@ -1,27 +1,33 @@
 import React from 'react';
-import Button from "@material-ui/core/Button";
 import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
 
 const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => {
   return (
-    <div style={{ paddingLeft: 15 }}>
-      <h2 style={{ textAlign: 'left' }}>Scheduled Events</h2>
-      <div>
+    <div>
+      <div style={{display: 'flex'}}>
+        <span role="img" aria-label="logo" style={{fontSize: 25}}>🎒 </span>
+        <Typography style={{color: 'white', fontSize: 25, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
+      </div>
+      <div style={{paddingLeft: 20}}>
         {events.map((event, ind) => {
-          return <div key={ind} style={styles.eventListing}><div>{event.dateString} - {event.title} @{event.venue}</div>
-            {editable && <div>
-              <Button style={{ color: 'orange' }}
-                onClick={() => onUpdate(event)}
-              >
-                update
-              </Button>
-              <Button style={{ color: 'red' }}
-                onClick={() => onDelete(event.eventId)}
-              >
-                delete
-              </Button>
-            </div>}
-          </div>;
+          return (
+            <div style={{display: 'flex'}}>
+              <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString} - {event.title} @{event.venue}</Typography>
+                {editable && <div style={{display: 'flex'}}>
+                  <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }}
+                    onClick={() => onUpdate(event)}
+                  >
+                    update
+                  </div>
+                  <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }}
+                    onClick={() => onDelete(event.eventId)}
+                  >
+                    delete
+                  </div>
+                </div>}
+            </div>
+          )
         })}
       </div>
     </div>
