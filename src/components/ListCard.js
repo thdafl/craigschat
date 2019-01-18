@@ -14,7 +14,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
 
   const renderAvatars = () => (
     Object.keys(roommembers).map(id => 
-      getProfile(id, user => (
+      (owner.id !== id) && getProfile(id, user => (
         (user.deleted) ? null :
         <Avatar
           key={id}
@@ -56,9 +56,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
               ))}
               <div className={membersAvatarWrapper}>
                 <div style={{display: 'flex'}}>{renderAvatars()}</div>
-                {/* <Chip label={`🐵 ${Object.keys(roommembers).length}`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
                 <Chip label={`🎒 12`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
-                {/* <Chip label={`✌️ 5`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} /> */}
               </div>
             </div>
           </CardMedia>

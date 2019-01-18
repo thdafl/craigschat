@@ -10,25 +10,24 @@ const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => 
         <Typography style={{color: 'white', fontSize: 25, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
       </div>
       <div style={{paddingLeft: 20}}>
-        {events.map((event, ind) => {
-          return (
-            <div style={{display: 'flex'}}>
-              <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString} - {event.title} @{event.venue}</Typography>
-                {editable && <div style={{display: 'flex'}}>
-                  <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }}
-                    onClick={() => onUpdate(event)}
-                  >
-                    update
-                  </div>
-                  <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }}
-                    onClick={() => onDelete(event.eventId)}
-                  >
-                    delete
-                  </div>
-                </div>}
-            </div>
-          )
-        })}
+        {(events.length) ? 
+          events.map((event, id) => {
+            return (
+              <div id={id} style={{display: 'flex'}}>
+                <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString} - {event.title} @{event.venue}</Typography>
+                  {editable && <div style={{display: 'flex'}}>
+                    <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => onUpdate(event)}>
+                      Update
+                    </div>
+                    <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }} onClick={() => onDelete(event.eventId)}>
+                      Delete
+                    </div>
+                  </div>}
+              </div>
+            )
+          }) 
+        : <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>No Event is scheduled yet</Typography>
+        }
       </div>
     </div>
   );

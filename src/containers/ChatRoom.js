@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import { Link } from 'react-router-dom';
-import { withStyles, CircularProgress, Popover, Typography, Fab } from '@material-ui/core';
+import { withStyles, CircularProgress, Popover, Typography, Fab, Chip } from '@material-ui/core';
 import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import PhotoIcon from '@material-ui/icons/AddAPhoto';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,11 +17,9 @@ import Circle from '@material-ui/icons/FiberManualRecord';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 import ChatRoomEvents from '../components/ChatRoomEvents';
-
-import 'emoji-mart/css/emoji-mart.css'
-
 import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
+import 'emoji-mart/css/emoji-mart.css'
 
 const CHUNK_SIZE = 20
 
@@ -183,8 +181,7 @@ class ChatRoom extends Component {
 
   deleteEvent = id => {
     const chatRoomId = this.props.match.params.id;
-    firebaseDb.ref("events/" + chatRoomId).child(id)
-      .remove()
+    firebaseDb.ref("events/" + chatRoomId).child(id).remove()
   }
 
   updateEvent = event => {
@@ -288,14 +285,45 @@ class ChatRoom extends Component {
             <Grid item md={4} lg={4} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
               <div style={{display: 'flex', width: '100%', alignItems: 'center', height: 64, paddingLeft: 40}}>
                 <span role="img" aria-label="logo" style={{fontSize: '25px'}}>🤘</span>
+                  {(this.state.chatroom && this.props.user) && (this.state.chatroom.owner.id === this.props.user.id) ? 
+                    <div style={{display: 'flex', paddingLeft: 20}}>
+                      <Chip label="Create Event" style={{height: 23, backgroundColor: 'rgb(253, 203, 110)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
+                      onClick={() => this.props.history.push(`/event/${this.props.match.params.id}`)} />
+                      <Chip label="Edit Room Details" style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
+                      onClick={() => this.props.history.push(`${this.props.location.pathname}/edit`)} />
+                      <Chip label="Delete Room" style={{height: 23, backgroundColor: 'rgb(237, 119, 111)', fontSize: 11, fontWeight: 400, color: 'white'}} 
+                      onClick={() => this.deleteChatroom(this.state.chatroom)} />
+                    </div>
+                  : null }
               </div>
+
               <div style={{width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingBottom: 15}}>
                 <Typography style={{color: 'white', fontSize: 30, fontWeight: 600, textAlign: 'start', lineHeight: '2rem', paddingBottom: 10}}>{(this.state.chatroom) && this.state.chatroom.title}</Typography>
                 <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start'}}>{(this.state.chatroom) && this.state.chatroom.description}</Typography>
               </div>
 
+              <div style={{width: '90%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 15}}>
+                <Chip label={(this.state.chatroom) && this.state.chatroom.place} style={{height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', margin: 3}} />
+                {(this.state.chatroom) && 
+                  this.state.chatroom.tags.map((t) =>
+                    <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', margin: 3}} />
+                  )
+                }
+              </div>
+
               <div style={{display: 'flex', width: '90%', flexWrap: 'wrap', paddingBottom: 30}}>
-                {this.state.currentRoomMembers.map((m) => 
+                {(this.state.chatroom) && getProfile(this.state.chatroom.owner.id, user => (
+                  <div style={{position: 'relative'}}>
+                    <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
+                    {user.online ? 
+                      <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
+                      : <div style={{position: 'absolute', top: -1, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
+                    }
+                    <div style={{position: 'absolute', top: -1, left: -8, color: 'pink'}}><span role="img" aria-label="logo">🎖 </span></div>
+                  </div>
+                ))}
+                {this.state.currentRoomMembers.map((m) =>
+                  ((this.state.chatroom) && this.state.chatroom.owner.id !== m.id) &&
                   getProfile(m.id, user => (
                     (user.deleted) ? 
                     null :
@@ -326,9 +354,18 @@ class ChatRoom extends Component {
           <Grid item xs={12} sm={12} md={8} lg={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%', backgroundColor: 'white'}}>
             <div style={{display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: 64, borderBottom: '1px solid #eeeeee'}}>
               <div style={{display: 'flex', paddingLeft: 30, fontSize: 30}}>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🐵 </span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>111</Typography></div>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🎒 </span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>222</Typography></div>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">✌️</span><Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>333</Typography></div>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🐵 </span>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>11</Typography>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Members</Typography>
+                </div>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🎒 </span>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>22</Typography>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Events</Typography>
+                </div>
+                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">✌️</span>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>33</Typography>
+                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Something</Typography>
+                </div>
               </div>
               {(this.props.user) ? 
               <Link to="/user" style={{paddingRight: 30}}>
