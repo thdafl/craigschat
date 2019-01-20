@@ -294,7 +294,7 @@ class ChatRoom extends Component {
           
           <Hidden xsDown>
             <Grid item md={4} lg={4} style={{display: 'block', height: '100%', overflow: 'auto', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
-              <div style={{display: 'flex', width: '100%', alignItems: 'center', height: 64, paddingLeft: 20}}>
+              <div style={{display: 'flex', alignItems: 'center', height: 64, paddingLeft: 20}}>
                 <span role="img" aria-label="logo" style={{fontSize: '25px', cursor: 'pointer'}} onClick={() => this.props.history.push('/')}>🤘</span>
                   {(this.state.chatroom && this.props.user) && (this.state.chatroom.owner.id === this.props.user.id) ? 
                     <div style={{display: 'flex', paddingLeft: 20}}>
