@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography, Card } from '@material-ui/core';
 
-const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => {
+const ChatRoomEvents = React.memo(({ events, openEventDialog }) => {
   return (
     <div>
       <div style={{display: 'flex'}}>
@@ -12,18 +12,10 @@ const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => 
         {(events.length) ? 
           events.map((event, id) => {
             return (
-              <Card id={id} style={{display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10, padding: 10}}>
+              <Card id={id} onClick={() => openEventDialog(event)} style={{display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10, padding: 20, cursor: 'pointer'}}>
                 <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}, {event.time}</Typography>
                 <Typography style={{color: 'black', fontSize: 18, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
                 <Typography style={{color: 'black', fontSize: 15, fontWeight: 400, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.details}</Typography>
-                  {editable && <div style={{display: 'flex'}}>
-                    <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => onUpdate(event)}>
-                      Update
-                    </div>
-                    <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }} onClick={() => onDelete(event.eventId)}>
-                      Delete
-                    </div>
-                  </div>}
               </Card>
             )
           }) 
