@@ -67,7 +67,8 @@ class ChatRoom extends Component {
             venue: item.venue,
             eventId: item.id,
             details: item.details,
-            dateString: item.dateString
+            dateString: item.dateString,
+            time: item.time
           })
         });
 

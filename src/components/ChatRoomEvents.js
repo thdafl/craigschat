@@ -6,16 +6,16 @@ const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => 
   return (
     <div>
       <div style={{display: 'flex'}}>
-        <Typography style={{color: 'white', fontSize: 25, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
-        <span role="img" aria-label="logo" style={{fontSize: 25}}>🎒 </span>
+        <Typography style={{color: 'white', fontSize: 20, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
       </div>
       <div>
         {(events.length) ? 
           events.map((event, id) => {
             return (
               <Card id={id} style={{display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10, padding: 10}}>
-                <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 12, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}</Typography>
-                <Typography style={{color: 'black', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
+                <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}, {event.time}</Typography>
+                <Typography style={{color: 'black', fontSize: 18, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
+                <Typography style={{color: 'black', fontSize: 15, fontWeight: 400, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.details}</Typography>
                   {editable && <div style={{display: 'flex'}}>
                     <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => onUpdate(event)}>
                       Update
