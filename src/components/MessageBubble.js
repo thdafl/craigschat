@@ -20,7 +20,7 @@ class MessageBubble extends React.Component {
       }
       return (
         <div style={{textAlign: 'left'}}>
-          <img src={message.image} alt="messageImage" style={{border: 'solid 1px gray', maxHeight: 250, height: this.state.imageHeight}}></img>
+          <img src={message.image} alt="messageImage" style={{border: 'solid 1px gray', maxHeight: 250, maxWidth: '80%', height: this.state.imageHeight}}></img>
         </div>
       )
     }
