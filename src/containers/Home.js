@@ -6,7 +6,7 @@ import { firebaseDb } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
 import Header from './Header';
 import ListCard from '../components/ListCard';
-import { Typography, Card, Grid, Hidden, withStyles } from '@material-ui/core';
+import { Typography, Card, Grid, Hidden, withStyles, Avatar } from '@material-ui/core';
 
 class Home extends Component {
   constructor(props) {
@@ -15,6 +15,7 @@ class Home extends Component {
       user: "",
       id: "",
       description : "",
+      recentUsers: "",
       chatRooms: [],
       display: ''
     }
@@ -43,6 +44,10 @@ class Home extends Component {
         chatRooms : chatrooms
       });
     })
+
+    firebaseDb.ref('users').limitToLast(10).once('value', (snapshot) => { 
+      this.setState({recentUsers: snapshot.val()})
+    })
   }
 
   onGoToChatButtonClick(id) {
@@ -52,14 +57,13 @@ class Home extends Component {
   render() {
     const {loginUser: user = {}} = this.props.user
     const {chatRooms} = this.state
-
     const ownedRooms = chatRooms.filter(({owner}) => user && owner.id === user.id)
     const joinedRooms = chatRooms.filter(({roommembers}) => user && roommembers[user.id])
     
     return (
-      <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%'}}>
+      <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "center", height: '100%'}}>
         <Header user={this.props.user.loginUser} />
-        <div style={{width: '100%', paddingTop: 80}}>
+        <div className={this.props.classes.mainContainer}>
           <Grid container style={{display: 'flex', justifyContent: 'center'}}>
             <Grid item xs={12} sm={12} md={12} lg={7} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Grid container> 
@@ -106,20 +110,27 @@ class Home extends Component {
                   <Card raised={false} style={{padding: '2rem', boxShadow: 'none'}}>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                       <div style={{display: 'flex'}}>
-                        <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem'}}>Welcome </Typography>
+                        <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem', paddingBottom: 20}}>Welcome </Typography>
                         <span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 👋 </span>
                       </div>
                       <div style={{display: 'flex'}}>
-                        <Typography style={{textAlign: 'start',fontSize: '1rem', fontWeight: 600, paddingTop: '1rem', color: 'gray'}}>Join Us, chat, and build Communities!</Typography>
+                        {(this.state.recentUsers) &&
+                          Object.values(this.state.recentUsers).map(u => 
+                          (!u.deleted) ? <Avatar alt="user-avatar" src={u.photoUrl} /> : null
+                          )
+                        }
                       </div>
+                      <div style={{display: 'flex', paddingBottom: 5}}>
+                        <Typography style={{textAlign: 'start',fontSize: '1rem', fontWeight: 600, paddingTop: '1rem', color: 'gray'}}>Join Us, chat, and connect with awesome people have same interests!</Typography>
+                      </div>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'flex-start', marginTop: '15px'}}>
+                      <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>About</Link>
+                      <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Terms</Link>
+                      <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Privacy Policy</Link>
                     </div>
                   </Card>
                   }
-                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '15px'}}>
-                    <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>About</Link>
-                    <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Terms and Conditions</Link>
-                    <Link to="/" style={{fontSize: 15, fontWeight: 100, color: 'gray', textDecoration: 'none', padding: 3}}>Privacy Policy</Link>
-                  </div>
                 </div>
                 
               </Grid>
@@ -131,9 +142,11 @@ class Home extends Component {
   }
 }
 const styles = theme => ({
-  jumbotronContents: {
-    paddingTop: 100,
-    minHeight: 150
+  mainContainer: {
+    paddingTop: 80,
+    [theme.breakpoints.up('lg')]: {
+      width: "90%"
+    },
   }
 })
 
