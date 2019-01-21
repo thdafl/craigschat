@@ -107,16 +107,16 @@ class Home extends Component {
                       </div>
                     </Card>
                   :  
-                  <Card raised={false} style={{padding: '2rem', boxShadow: 'none'}}>
+                  <Card raised={false} style={{padding: '1.5rem', boxShadow: 'none'}}>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                       <div style={{display: 'flex'}}>
                         <Typography style={{fontSize: '1.5rem', fontWeight: 700, paddingRight: '0.5rem', paddingBottom: 20}}>Welcome </Typography>
                         <span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 👋 </span>
                       </div>
-                      <div style={{display: 'flex'}}>
+                      <div style={{display: 'flex', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                         {(this.state.recentUsers) &&
                           Object.values(this.state.recentUsers).map(u => 
-                          (!u.deleted) ? <Avatar alt="user-avatar" src={u.photoUrl} /> : null
+                          (!u.deleted) ? <Avatar alt="user-avatar" src={u.photoUrl} width={35} height={35} /> : null
                           )
                         }
                       </div>
@@ -145,8 +145,11 @@ const styles = theme => ({
   mainContainer: {
     paddingTop: 80,
     [theme.breakpoints.up('lg')]: {
-      width: "90%"
+      width: "100%"
     },
+    [theme.breakpoints.up('xl')]: {
+      width: "90%"
+    }
   }
 })
 

@@ -126,9 +126,12 @@ const styles = theme => ({
   toolbar: {
     padding: 0,
     [theme.breakpoints.up('lg')]: {
-      width: "75%"
+      width: "80%"
     },
-  },
+    [theme.breakpoints.up('xl')]: {
+      width: "75%"
+    }
+  }
 });
 
 export default withRouter(withStyles(styles)(Header));
