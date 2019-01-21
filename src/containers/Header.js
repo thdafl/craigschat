@@ -107,7 +107,7 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="absolute" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee', borderBottom: '1px solid #eeeeee'}}>
+      <AppBar position="absolute" color="default" style={{boxShadow: 'none', backgroundColor: 'rgb(38, 65, 143)'}}>
         <Toolbar style={{display: 'flex', justifyContent: 'space-between', alignSelf: 'center'}} className={this.props.classes.toolbar}>
           <div style={{display: 'flex', alignItems: 'center', fontSize: '25px'}}>
             <span role="img" aria-label="logo">🤘</span>
