@@ -14,6 +14,9 @@ import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import PhotoIcon from '@material-ui/icons/AddAPhoto';
 import IconButton from '@material-ui/core/IconButton';
 import Circle from '@material-ui/icons/FiberManualRecord';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 import ChatRoomEvents from '../components/ChatRoomEvents';
@@ -44,7 +47,9 @@ class ChatRoom extends Component {
       initialMessagesLength: null,
       events: [],
       chatroom: null,
-      imageUploading: false
+      imageUploading: false,
+      eventDialogOpen: false,
+      eventSelectedForModal: ''
     }
 
     this.onTextChange = this.onTextChange.bind(this);
@@ -67,7 +72,8 @@ class ChatRoom extends Component {
             venue: item.venue,
             eventId: item.id,
             details: item.details,
-            dateString: item.dateString
+            dateString: item.dateString,
+            time: item.time
           })
         });
 
@@ -182,6 +188,7 @@ class ChatRoom extends Component {
   deleteEvent = id => {
     const chatRoomId = this.props.match.params.id;
     firebaseDb.ref("events/" + chatRoomId).child(id).remove()
+    this.setState({eventDialogOpen: false})
   }
 
   updateEvent = event => {
@@ -276,15 +283,19 @@ class ChatRoom extends Component {
     }
   }
 
+  openEventDialog = (event) => {
+    this.setState({eventDialogOpen: !this.state.eventDialogOpen, eventSelectedForModal: event})
+  }
+
   render() {
     return (
       <div className="App" style={{height: '100%'}}>
         <Grid container style={{height: '100%', position: 'fixed'}}> 
           
           <Hidden xsDown>
-            <Grid item md={4} lg={4} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
-              <div style={{display: 'flex', width: '100%', alignItems: 'center', height: 64, paddingLeft: 40}}>
-                <span role="img" aria-label="logo" style={{fontSize: '25px'}}>🤘</span>
+            <Grid item md={4} lg={4} style={{display: 'block', height: '100%', overflow: 'auto', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
+              <div style={{display: 'flex', alignItems: 'center', height: 64, paddingLeft: 20}}>
+                <span role="img" aria-label="logo" style={{fontSize: '25px', cursor: 'pointer'}} onClick={() => this.props.history.push('/')}>🤘</span>
                   {(this.state.chatroom && this.props.user) && (this.state.chatroom.owner.id === this.props.user.id) ? 
                     <div style={{display: 'flex', paddingLeft: 20}}>
                       <Chip label="Create Event" style={{height: 23, backgroundColor: 'rgb(253, 203, 110)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
@@ -296,6 +307,8 @@ class ChatRoom extends Component {
                     </div>
                   : null }
               </div>
+
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
               <div style={{width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingBottom: 15}}>
                 <Typography style={{color: 'white', fontSize: 30, fontWeight: 600, textAlign: 'start', lineHeight: '2rem', paddingBottom: 10}}>{(this.state.chatroom) && this.state.chatroom.title}</Typography>
@@ -340,14 +353,12 @@ class ChatRoom extends Component {
               <div style={{width: '90%'}}>
                 <ChatRoomEvents
                   events={this.state.events}
-                  editable={
-                    (this.props.user && this.props.user.id) ===
-                    (this.state.chatroom && this.state.chatroom.owner.id)
-                  }
-                  onDelete={this.deleteEvent}
-                  onUpdate={this.updateEvent}
+                  openEventDialog={this.openEventDialog}
                 />
               </div>
+
+              </div>
+
             </Grid>
           </Hidden>
 
@@ -439,6 +450,31 @@ class ChatRoom extends Component {
             </form>
           </Grid>
         </Grid>
+
+        <Dialog
+          onClose={this.openEventDialog}
+          aria-labelledby="customized-dialog-title"
+          open={this.state.eventDialogOpen}
+        >
+          <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
+            <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{this.state.eventSelectedForModal.dateString} {this.state.eventSelectedForModal.time}</Typography>
+            <Typography style={{color: 'black', fontSize: 25, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{this.state.eventSelectedForModal.title} @{this.state.eventSelectedForModal.venue}</Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Typography style={{color: 'black', fontSize: 17, fontWeight: 400, textAlign: 'start', paddingRight: 10}}>{this.state.eventSelectedForModal.details}</Typography>
+          
+          {(this.props.user && this.props.user.id) === (this.state.chatroom && this.state.chatroom.owner.id) &&
+            <div>
+              <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => this.updateEvent(this.state.eventSelectedForModal)}>
+                Update
+              </div>
+              <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }} onClick={() => this.deleteEvent(this.state.eventSelectedForModal.eventId)}>
+                Delete
+              </div>
+            </div>
+          }
+          </DialogContent>
+        </Dialog>
          
       </div>
     );

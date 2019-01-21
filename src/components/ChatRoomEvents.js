@@ -1,29 +1,22 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { Typography, Card } from '@material-ui/core';
 
-const ChatRoomEvents = React.memo(({ editable, events, onDelete, onUpdate }) => {
+const ChatRoomEvents = React.memo(({ events, openEventDialog }) => {
   return (
     <div>
       <div style={{display: 'flex'}}>
-        <span role="img" aria-label="logo" style={{fontSize: 25}}>🎒 </span>
-        <Typography style={{color: 'white', fontSize: 25, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
+        <Typography style={{color: 'white', fontSize: 20, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
       </div>
-      <div style={{paddingLeft: 20}}>
+      <div>
         {(events.length) ? 
           events.map((event, id) => {
             return (
-              <div id={id} style={{display: 'flex'}}>
-                <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString} - {event.title} @{event.venue}</Typography>
-                  {editable && <div style={{display: 'flex'}}>
-                    <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => onUpdate(event)}>
-                      Update
-                    </div>
-                    <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }} onClick={() => onDelete(event.eventId)}>
-                      Delete
-                    </div>
-                  </div>}
-              </div>
+              <Card id={id} onClick={() => openEventDialog(event)} style={{display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10, padding: 20, cursor: 'pointer'}}>
+                <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}, {event.time}</Typography>
+                <Typography style={{color: 'black', fontSize: 18, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
+                <Typography style={{color: 'black', fontSize: 15, fontWeight: 400, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.details}</Typography>
+              </Card>
             )
           }) 
         : <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>No Event is scheduled yet</Typography>
