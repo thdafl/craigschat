@@ -8,14 +8,15 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import createSagaMiddleware from 'redux-saga';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { rootSaga } from './store/index';
 
+const composeEnhancers = composeWithDevTools({});
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(sagaMiddleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    composeEnhancers(applyMiddleware(sagaMiddleware))
   )
 );
 
