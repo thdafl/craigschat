@@ -30,8 +30,8 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
           />)
       ))
     );
-    if (members.lenth > 5) {
-      return members.slice(0, 5) + <p>+ {members.length - 5}</p>;
+    if (members.lenth > 3) {
+      return members.slice(0, 3) + <p>+ {members.length - 3}</p>;
     } else {
       return members;
     }
