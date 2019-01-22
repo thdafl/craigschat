@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { fetchChatrooms } from '../store/chatrooms/actions';
+import { fetchUsers } from '../store/users/actions';
 import Header from './Header';
 import ListCard from '../components/ListCard';
 import { Typography, Card, Grid, Hidden, withStyles, Button, CircularProgress } from '@material-ui/core';
@@ -25,6 +26,7 @@ class Home extends Component {
 
   componentWillMount() {
     this.props.fetchChatrooms()
+    this.props.fetchUsers()
   }
 
   onGoToChatButtonClick(id) {
@@ -33,23 +35,29 @@ class Home extends Component {
 
   render() {
     const {loginUser: user = {}} = this.props.user
-    const { loading, chatrooms } = this.props
-    const ownedRooms = Object.values(chatrooms).filter(({owner}) => user && owner.id === user.id)
+    const { chatroomsLoading, chatrooms, usersLoading, users } = this.props
+    const ownedRooms = Object.values(chatrooms).filter(({owner}) => (owner && user) && owner.id === user.id)
     const joinedRooms = Object.values(chatrooms).filter(({roommembers}) => (user && roommembers) && roommembers[user.id])
-    const chatroomTotal = Object.keys(chatrooms).length - Object.values(chatrooms).filter(({archived}) => archived).length
+    const chatroomTotal = (chatrooms) && Object.keys(chatrooms).length - Object.values(chatrooms).filter(({archived}) => archived).length
+    const userTotal = (users) && Object.keys(users).length - Object.values(users).filter(({deleted}) => deleted).length
     
     return (
       <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "center", height: '100%'}}>
         <Header user={this.props.user.loginUser} />
         <div style={{width: '100%', height: 200, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
-          <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have 12 users and {chatroomTotal} communites</Typography>
-          <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', color: 'white'}}>Join us, chat, and connect with awesome people have same interests!</Typography>
+          {(!usersLoading && !chatroomsLoading) ?
+            <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have {userTotal} users and {chatroomTotal} communites</Typography>
+            : <div><CircularProgress /></div>
+          }
+          <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', color: 'white'}}>
+            Join us, chat, and connect with awesome people have same interests!
+          </Typography>
         </div>
         <div className={this.props.classes.mainContainer}>
           <Grid container style={{display: 'flex', justifyContent: 'center'}}>
             <Grid item xs={12} sm={12} md={12} lg={(this.props.user.loginUser) ? 7 : 9} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              {(loading) ? 
-              <div style={{display: 'flex', alignItems: 'center', height: 400}}><CircularProgress /></div> :
+              {(chatroomsLoading) ? 
+              <div style={{display: 'flex', alignItems: 'center', height: 515}}><CircularProgress /></div> :
               <Grid container> 
                 {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : Object.values(chatrooms)).map((chatroom, id) => {
                   if (this.props.user.loginUser ? (!chatroom.archived) : (!chatroom.archived && id <= 12)) {
@@ -139,12 +147,15 @@ const styles = theme => ({
 
 const mapStateToProps = (state) => ({
   user: state.usersReducer,
-  loading: state.chatroomsReducer.loading,
+  users: state.usersReducer.users,
+  usersLoading: state.usersReducer.loading,
+  chatroomsLoading: state.chatroomsReducer.loading,
   chatrooms: state.chatroomsReducer.chatrooms
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchChatrooms: () => dispatch(fetchChatrooms()),
+  fetchUsers: () => dispatch(fetchUsers()),
+  fetchChatrooms: () => dispatch(fetchChatrooms())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Home)));
