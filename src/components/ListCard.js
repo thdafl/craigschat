@@ -9,30 +9,40 @@ import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
 import Chip from '@material-ui/core/Chip';
 
-const ListCard = ({onClick, owner, title, place, description, roommembers, image, tags, classes}) => {
+const ListCard = ({ onClick, owner, title, place, description, roommembers, image, tags, classes }) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
-  const renderAvatars = () => (
-    Object.keys(roommembers).map(id => 
+  const renderAvatars = () => {
+    const members = [];
+    Object.keys(roommembers).map(id =>
       (owner.id !== id) && getProfile(id, user => (
         (user.deleted) ? null :
-        <Avatar
-          key={id}
-          className={membersAvatar}
-          alt={user.name}
-          src={user.photoUrl}
-          style={{borderWidth: 2, borderStyle: 'solid', borderColor: 'rgb(255, 255, 255)'}}
-        />
+          members.push(<Avatar
+            key={id}
+            className={membersAvatar}
+            alt={user.name}
+            src={user.photUrl}
+            style={{
+              borderWidth: 2,
+              borderStyle: "solid",
+              borderColor: "rgb(255, 255, 255)"
+            }}
+          />)
       ))
-    )
-  )
+    );
+    if (members.lenth > 5) {
+      return members.slice(0, 5) + <p>+ {members.length - 5}</p>;
+    } else {
+      return members;
+    }
+  };
 
   const renderTags = () => {
     const tgs = [];
     if (tags) {
-      tags.map((t) => 
+      tags.map((t) =>
         tgs.push(
-          <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3}} />
+          <Chip key={t} label={"#" + t} style={{ height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3 }} />
         )
       )
     }
@@ -41,34 +51,34 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
 
   return (
     <Card className={cardContainer}>
-      <CardActionArea onClick={onClick} style={{height: '100%'}}>
-          <CardMedia
-            style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}
-            image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
-            title="Contemplative Reptile"
-          >
-          <div style={{height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-            <Typography style={{fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)'}}>{title}</Typography>
+      <CardActionArea onClick={onClick} style={{ height: '100%' }}>
+        <CardMedia
+          style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
+          title="Contemplative Reptile"
+        >
+          <div style={{ height: 60, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Typography style={{ fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>{title}</Typography>
           </div>
           <div className={ownerInfoWrapper}>
-              {getProfile(owner.id, user => (
-                <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
-              ))}
-              <div className={membersAvatarWrapper}>
-                <div style={{display: 'flex'}}>{renderAvatars()}</div>
-                <Chip label={`🎒 12`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
-              </div>
+            {getProfile(owner.id, user => (
+              <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
+            ))}
+            <div className={membersAvatarWrapper}>
+              <div style={{ display: 'flex' }}>{renderAvatars()}</div>
+              <Chip label={`🎒 12`} style={{ height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3 }} />
             </div>
-          </CardMedia>
+          </div>
+        </CardMedia>
 
-          <CardContent className={cardContent}>
-            <div style={{display: 'flex', textAlign: 'start', height: 60, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis'}}>
-              <Typography style={{fontSize: 14, fontWeight: 700, color: 'rgb(72, 72, 72)', paddingLeft: 3}}>{description}</Typography>
-            </div>
-            <div style={{display: 'flex', textAlign: 'start', height: 30, overflow: 'hidden', textOverflow: 'ellipsis'}}>
-              <Chip label={place} style={{height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3}} />
-              {renderTags()}
-            </div>
+        <CardContent className={cardContent}>
+          <div style={{ display: 'flex', textAlign: 'start', height: 60, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Typography style={{ fontSize: 14, fontWeight: 700, color: 'rgb(72, 72, 72)', paddingLeft: 3 }}>{description}</Typography>
+          </div>
+          <div style={{ display: 'flex', textAlign: 'start', height: 30, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Chip label={place} style={{ height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3 }} />
+            {renderTags()}
+          </div>
         </CardContent>
       </CardActionArea>
     </Card>
@@ -119,7 +129,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     fontSize: '20px',
-    fontWeight: 600, 
+    fontWeight: 600,
   },
   membersAvatarWrapper: {
     display: 'flex',
