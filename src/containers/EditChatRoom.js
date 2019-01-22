@@ -115,7 +115,7 @@ class EditChatRoom extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users
+  user: state.usersReducer
 })
 
 const mapDispatchToProps = (dispatch) => ({

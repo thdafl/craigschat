@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
-import '../App.css';
-import { firebaseDb } from '../config/firebase.js';
 import { withRouter } from 'react-router-dom';
+import { fetchChatrooms } from '../store/chatrooms/actions';
 import Header from './Header';
 import ListCard from '../components/ListCard';
-import { Typography, Card, Grid, Hidden, withStyles, Button } from '@material-ui/core';
+import { Typography, Card, Grid, Hidden, withStyles, Button, CircularProgress } from '@material-ui/core';
+import '../App.css';
 
 class Home extends Component {
   constructor(props) {
@@ -23,27 +23,8 @@ class Home extends Component {
     this.onGoToChatButtonClick = this.onGoToChatButtonClick.bind(this);
   }
 
-  componentDidMount() {
-    firebaseDb.ref('chatrooms').on('child_added', (snapshot) => {
-      const ctr = snapshot.val()
-      const chatrooms = this.state.chatRooms
-
-      chatrooms.push({
-        id: ctr.id,
-        owner : ctr.owner,
-        title: ctr.title,
-        tags: ctr.tags,
-        place: ctr.place,
-        description : ctr.description,
-        roommembers: ctr.roommembers,
-        archived: ctr.archived,
-        image: ctr.image
-      })
-
-      this.setState({
-        chatRooms : chatrooms
-      });
-    })
+  componentWillMount() {
+    this.props.fetchChatrooms()
   }
 
   onGoToChatButtonClick(id) {
@@ -52,24 +33,26 @@ class Home extends Component {
 
   render() {
     const {loginUser: user = {}} = this.props.user
-    const {chatRooms} = this.state
-    const ownedRooms = chatRooms.filter(({owner}) => user && owner.id === user.id)
-    const joinedRooms = chatRooms.filter(({roommembers}) => user && roommembers[user.id])
-    console.log(this.props.user)
+    const { loading, chatrooms } = this.props
+    const ownedRooms = Object.values(chatrooms).filter(({owner}) => user && owner.id === user.id)
+    const joinedRooms = Object.values(chatrooms).filter(({roommembers}) => (user && roommembers) && roommembers[user.id])
+    const chatroomTotal = Object.keys(chatrooms).length - Object.values(chatrooms).filter(({archived}) => archived).length
     
     return (
       <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "center", height: '100%'}}>
         <Header user={this.props.user.loginUser} />
         <div style={{width: '100%', height: 200, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
-          <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have 12 users and 23 communites</Typography>
+          <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have 12 users and {chatroomTotal} communites</Typography>
           <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', color: 'white'}}>Join us, chat, and connect with awesome people have same interests!</Typography>
         </div>
         <div className={this.props.classes.mainContainer}>
           <Grid container style={{display: 'flex', justifyContent: 'center'}}>
             <Grid item xs={12} sm={12} md={12} lg={(this.props.user.loginUser) ? 7 : 9} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              {(loading) ? 
+              <div style={{display: 'flex', alignItems: 'center', height: 400}}><CircularProgress /></div> :
               <Grid container> 
-                {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : this.state.chatRooms).map((chatroom, id) => {
-                  if (this.props.user.loginUser ? (!chatroom.archived) : (!chatroom.archived && id <= 8)) {
+                {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : Object.values(chatrooms)).map((chatroom, id) => {
+                  if (this.props.user.loginUser ? (!chatroom.archived) : (!chatroom.archived && id <= 12)) {
                     return (
                       <Grid item xs={12} sm={6} md={4} lg={(this.props.user.loginUser) ? 4 : 3} key={id} style={{display: 'flex', justifyContent: 'center'}}>
                         <ListCard
@@ -83,6 +66,7 @@ class Home extends Component {
                   return null
                 })}
               </Grid>
+              }
             </Grid>
 
             {(this.props.user.loginUser) &&
@@ -154,10 +138,13 @@ const styles = theme => ({
 })
 
 const mapStateToProps = (state) => ({
-  user: state.users
+  user: state.usersReducer,
+  loading: state.chatroomsReducer.loading,
+  chatrooms: state.chatroomsReducer.chatrooms
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchChatrooms: () => dispatch(fetchChatrooms()),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Home)));
