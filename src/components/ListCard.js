@@ -13,7 +13,7 @@ const ListCard = ({onClick, owner, title, place, description, roommembers, image
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
   const renderAvatars = () => (
-    Object.keys(roommembers).map(id => 
+    (roommembers) && Object.keys(roommembers).map(id => 
       (owner.id !== id) && getProfile(id, user => (
         (user.deleted) ? null :
         <Avatar

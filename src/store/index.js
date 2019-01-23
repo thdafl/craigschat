@@ -1,4 +1,16 @@
 import { combineReducers } from 'redux';
-import users from './users/reducer';
+import { all } from 'redux-saga/effects';
+import usersReducer from './users/reducer';
+import chatroomsSaga from './chatrooms/saga';
+import chatroomsReducer from './chatrooms/reducer';
 
-export const rootReducer = combineReducers({ users });
+export const rootReducer = combineReducers({ 
+  usersReducer,
+  chatroomsReducer
+});
+
+export function* rootSaga() {
+  yield all([
+    chatroomsSaga()
+  ])
+}

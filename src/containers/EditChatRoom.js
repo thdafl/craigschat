@@ -34,6 +34,11 @@ class EditChatRoom extends Component {
   onFormSubmit = (e) => {
     e.preventDefault()
 
+    if (!this.state.tags.length) {
+      alert("Please add a tag at least!")
+      return
+    }
+
     const id = this.state.id || firebaseDb.ref('chatrooms').push().key;
     firebaseDb.ref('chatrooms/' + id).set({
       "id": id,
@@ -90,6 +95,7 @@ class EditChatRoom extends Component {
               label="Place"
               value={this.state.place}
               onChange={this.onTextChange}
+              required
             />
             <TextField
               name="description"
@@ -99,6 +105,7 @@ class EditChatRoom extends Component {
               rows={4}
               multiline
               fullWidth
+              required
             />
             <ChipInput
               label="Tags"
@@ -115,7 +122,7 @@ class EditChatRoom extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users
+  user: state.usersReducer
 })
 
 const mapDispatchToProps = (dispatch) => ({
