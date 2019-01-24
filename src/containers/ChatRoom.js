@@ -23,6 +23,7 @@ import ChatRoomEvents from '../components/ChatRoomEvents';
 import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
 import 'emoji-mart/css/emoji-mart.css'
+import Confirm from '../components/Confirm.js';
 
 const CHUNK_SIZE = 20
 
@@ -302,8 +303,15 @@ class ChatRoom extends Component {
                       onClick={() => this.props.history.push(`/event/${this.props.match.params.id}`)} />
                       <Chip label="Edit Room Details" style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
                       onClick={() => this.props.history.push(`${this.props.location.pathname}/edit`)} />
-                      <Chip label="Delete Room" style={{height: 23, backgroundColor: 'rgb(237, 119, 111)', fontSize: 11, fontWeight: 400, color: 'white'}} 
-                      onClick={() => this.deleteChatroom(this.state.chatroom)} />
+                      <Confirm title={`Are you sure you want to delete Chatroom "${this.state.chatroom.title}"?`} dangerous>
+                       {confirm => (
+                          <Chip
+                            label="Delete Room"
+                            style={{height: 23, backgroundColor: 'rgb(237, 119, 111)', fontSize: 11, fontWeight: 400, color: 'white'}} 
+                            onClick={confirm(() => this.deleteChatroom(this.state.chatroom))}
+                          />
+                        )} 
+                      </Confirm>
                     </div>
                   : null }
               </div>
@@ -468,9 +476,16 @@ class ChatRoom extends Component {
               <div style={{ color: 'gray', fontSize: 15, cursor: 'pointer', paddingRight: 5 }} onClick={() => this.updateEvent(this.state.eventSelectedForModal)}>
                 Update
               </div>
-              <div style={{ color: 'red', fontSize: 15, cursor: 'pointer' }} onClick={() => this.deleteEvent(this.state.eventSelectedForModal.eventId)}>
-                Delete
-              </div>
+              <Confirm title={`Are you sure you want to delete Event "${this.state.eventSelectedForModal.title}"?`} dangerous>
+                {confirm => (
+                  <div
+                    style={{ color: 'red', fontSize: 15, cursor: 'pointer' }}
+                    onClick={confirm(() => this.deleteEvent(this.state.eventSelectedForModal.eventId))}
+                  >
+                    Delete
+                  </div>
+                )}
+              </Confirm>
             </div>
           }
           </DialogContent>
