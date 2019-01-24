@@ -15,13 +15,13 @@ function* handleFetchChatrooms() {
 
 function* chatroomsSaga() {
   yield all([
-    takeLatest(FETCH_CHATROOMS, handleFetchChatrooms)
+    takeLatest(FETCH_CHATROOMS, handleFetchChatrooms),
+    fork(
+      rsf.database.sync,
+      'chatrooms',
+      { successActionCreator: (chatroom) => fetchSuccess(chatroom) }
+    )
   ])
-  yield fork(
-    rsf.database.sync,
-    'chatrooms',
-    { successActionCreator: (chatroom) => fetchSuccess(chatroom) }
-  );
 }
 
  export default chatroomsSaga; 
