@@ -9,28 +9,38 @@ import { withStyles } from '@material-ui/core/styles';
 import getProfile from '../hocs/ProfileCache.js';
 import Chip from '@material-ui/core/Chip';
 
-const ListCard = ({onClick, owner, title, place, description, roommembers, image, tags, classes}) => {
+const ListCard = ({ onClick, owner, title, place, description, roommembers, image, tags, classes }) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
-  const renderAvatars = () => (
-    (roommembers) && Object.keys(roommembers).map(id => 
+  const renderAvatars = () => {
+    const members = [];
+    (roommembers) && Object.keys(roommembers).map(id =>
       (owner.id !== id) && getProfile(id, user => (
         (user.deleted) ? null :
-        <Avatar
-          key={id}
-          className={membersAvatar}
-          alt={user.name}
-          src={user.photoUrl}
-          style={{borderWidth: 2, borderStyle: 'solid', borderColor: 'rgb(255, 255, 255)'}}
-        />
+          members.push(<Avatar
+            key={id}
+            className={membersAvatar}
+            alt={user.name}
+            src={user.photUrl}
+            style={{
+              borderWidth: 2,
+              borderStyle: "solid",
+              borderColor: "rgb(255, 255, 255)"
+            }}
+          />)
       ))
-    )
-  )
+    );
+    if (members.length > 3) {
+      return members.slice(0, 3) + <p>+ {members.length - 3}</p>;
+    } else {
+      return members;
+    }
+  };
 
   const renderTags = () => {
     const tgs = [];
     if (tags) {
-      tags.map((t) => 
+      tags.map((t) =>
         tgs.push(
           <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3, fontFamily: 'Open Sans'}} />
         )
@@ -118,7 +128,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     fontSize: '20px',
-    fontWeight: 600, 
+    fontWeight: 600,
   },
   membersAvatarWrapper: {
     display: 'flex',
