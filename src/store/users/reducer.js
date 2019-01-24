@@ -1,4 +1,11 @@
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_USERS_FAIL, USER_LOGIN, USER_LOGOUT, USER_UPDATE } from './types';
+import { 
+  FETCH_USERS,
+  FETCH_USERS_SUCCESS,
+  FETCH_USERS_FAIL,
+  USER_LOGIN,
+  USER_LOGOUT,
+  USER_UPDATE_SUCCESS
+} from './types';
 
 const users = (state = {}, action) => {
   switch(action.type) {
@@ -28,7 +35,7 @@ const users = (state = {}, action) => {
       ...state,
       loginUser: null
     }
-    case USER_UPDATE:
+    case USER_UPDATE_SUCCESS:
     return {
       ...state,
       loginUser: action.user

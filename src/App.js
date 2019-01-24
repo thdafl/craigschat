@@ -18,37 +18,6 @@ class App extends Component {
   componentDidMount() {
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
-          if (snapshot.exists()) {
-            const existingUser = snapshot.val()
-            firebaseDb.ref('users/' + existingUser.id).update({ online: true })
-            this.props.login(existingUser);
-          } 
-          else {
-            firebaseDb.ref('users/' + user.uid).set({
-              "id": user.uid,
-              "name" : user.displayName,
-              "email" : user.email,
-              "photoUrl" : user.photoURL,
-              "provider": user.providerData[0].providerId,
-              "online": true
-            })
-            firebaseDb.ref('users/' + user.uid).once('value', (snapshot) => {
-              this.props.login(snapshot.val());
-            })
-            this.setState({ 
-              user: {
-                "id": user.uid,
-                "name" : user.displayName,
-                "email" : user.email,
-                "photoUrl" : user.photoURL,
-                "provider": user.providerData[0].providerId
-                }
-              }
-            )
-          }
-        })
-
         // if online, set online true
         firebaseDb.ref(".info/connected").on("value", (snap) => {
           if (snap.val() === true) {
@@ -62,8 +31,6 @@ class App extends Component {
 
         // if disconnected, set online false
         firebaseDb.ref('users/' + user.uid + '/online').onDisconnect().remove()
-      } else {
-        this.props.logout();
       }
     })
   }

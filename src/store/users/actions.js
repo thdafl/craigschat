@@ -1,4 +1,13 @@
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_USERS_FAIL, USER_LOGIN, USER_LOGOUT, USER_UPDATE } from './types';
+import { 
+  FETCH_USERS,
+  FETCH_USERS_SUCCESS,
+  FETCH_USERS_FAIL,
+  USER_LOGIN,
+  USER_LOGOUT,
+  USER_UPDATE,
+  USER_UPDATE_SUCCESS,
+  USER_DELETE
+} from './types';
 
 export const fetchUsers = () => {
   return {
@@ -24,12 +33,23 @@ export const userLogin = (user) => {
 
 export const userUpdate = (user) => {
   return {
-    type: USER_LOGOUT,
+    type: USER_UPDATE,
     user
 }}
 
+export const userUpdateSuccess = (user) => {
+  return {
+    type: USER_UPDATE_SUCCESS,
+    user
+}}
 
 export const userLogout = () => {
   return {
-    type: USER_UPDATE
+    type: USER_LOGOUT
+}}
+
+export const userDelete = (user) => {
+  return {
+    type: USER_DELETE,
+    user
 }}

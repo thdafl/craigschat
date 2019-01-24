@@ -44,12 +44,12 @@ class Home extends Component {
     return (
       <div className="App" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "center", height: '100%'}}>
         <Header user={this.props.user.loginUser} />
-        <div style={{width: '100%', height: 200, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
+        <div style={{width: '100%', minHeight: 200, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
           {(!usersLoading && !chatroomsLoading) ?
             <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have {userTotal} users and {chatroomTotal} communites</Typography>
             : <div><CircularProgress /></div>
           }
-          <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', color: 'white'}}>
+          <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', paddingBottom: '3rem', color: 'white'}}>
             Join us, chat, and connect with awesome people have same interests!
           </Typography>
         </div>
@@ -60,7 +60,7 @@ class Home extends Component {
               <div style={{display: 'flex', alignItems: 'center', height: 515}}><CircularProgress /></div> :
               <Grid container> 
                 {(this.state.display === 'owner' ? ownedRooms : this.state.display === 'joined' ? joinedRooms : Object.values(chatrooms)).map((chatroom, id) => {
-                  if (this.props.user.loginUser ? (!chatroom.archived) : (!chatroom.archived && id <= 12)) {
+                  if (this.props.user.loginUser ? (!chatroom.archived) : (!chatroom.archived && id <= 13)) {
                     return (
                       <Grid item xs={12} sm={6} md={4} lg={(this.props.user.loginUser) ? 4 : 3} key={id} style={{display: 'flex', justifyContent: 'center'}}>
                         <ListCard
@@ -120,7 +120,7 @@ class Home extends Component {
             // onClick={this.onClickMenuOpen}
             size="small"
             disableRipple
-            style={{background: 'linear-gradient(135deg, rgba(38, 65, 143, 1) 0%, rgba(92, 107, 192, 1) 100%)', color: 'white', fontWeight: 600, margin: 30}}
+            style={{background: 'linear-gradient(135deg, rgba(38, 65, 143, 1) 0%, rgba(92, 107, 192, 1) 100%)', padding: 15,color: 'white', fontWeight: 600, margin: '30px 30px 40px 30px'}}
           >
             Sign In/Up to see more communites
           </Button>

@@ -3,9 +3,8 @@ import {connect} from 'react-redux'
 import { Card, Avatar, Button, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import CustomUploadButton from 'react-firebase-file-uploader/lib/CustomUploadButton';
-
-import {firebaseDb, firebaseAuth, firebaseStorage} from '../config/firebase'
-import { userLogout, userUpdate } from '../store/users/actions';
+import { firebaseStorage } from '../config/firebase'
+import { userLogout, userUpdate, userDelete } from '../store/users/actions';
 
 class UserProfile extends Component {
   state = {
@@ -14,20 +13,7 @@ class UserProfile extends Component {
   }
   
   deleteAccount = async () => {
-    const {credential} = await firebaseAuth.signInWithPopup(require('../config/firebase')[this.props.user.loginUser.provider.split('.')[0] + 'Provider'])
-    
-    await firebaseDb.ref('chatrooms/').once('value', (snapshot) => { 
-      snapshot.forEach(cr => {
-        if (cr.val().owner.id === this.props.user.loginUser.id) {
-          firebaseDb.ref('chatrooms/' + cr.val().id + '/archived/').set(true)
-        }
-      })
-    })
-    await firebaseAuth.currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
-    await firebaseAuth.currentUser.delete()
-    await firebaseAuth.signOut()
-    await firebaseDb.ref('users/' + this.props.user.loginUser.id + '/deleted/').set(true)
-    await this.props.logout()
+    this.props.userDelete(this.props.user.loginUser)
     this.props.history.push("/")
   }
 
@@ -35,7 +21,7 @@ class UserProfile extends Component {
     this.setState({
       isEditting: !this.state.isEditting,
       profile: (this.state.profile || this.props.user.loginUser)
-    }, () => this.props.update(this.state.profile))
+    })
   }
 
   onFieldChange = (e) => {
@@ -45,7 +31,8 @@ class UserProfile extends Component {
   onFormSubmit= e => {
     e.preventDefault()
 
-    firebaseDb.ref('users/' + this.props.user.loginUser.id).set(this.state.profile, this.toggleEdit)
+    this.props.userUpdate(this.state.profile)
+    this.props.history.push("/")
   }
 
   handleAvatarChange = filename => {
@@ -102,12 +89,13 @@ class UserProfile extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.users || {}
+  user: state.usersReducer || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch(userLogout()),
-  update: user => dispatch(userUpdate(user))
+  userUpdate: user => dispatch(userUpdate(user)),
+  userDelete: user => dispatch(userDelete(user))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfile))
