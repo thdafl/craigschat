@@ -12,30 +12,35 @@ import Chip from '@material-ui/core/Chip';
 const ListCard = ({ onClick, owner, title, place, description, roommembers, image, tags, classes }) => {
   const { cardContainer, cardContent, ownerInfoWrapper, ownerAvatar, ownerNameText, membersAvatarWrapper, membersAvatar } = classes;
 
-  const renderAvatars = () => {
-    const members = [];
-    (roommembers) && Object.keys(roommembers).map(id =>
-      (owner.id !== id) && getProfile(id, user => (
-        (user.deleted) ? null :
-          members.push(<Avatar
-            key={id}
-            className={membersAvatar}
-            alt={user.name}
-            src={user.photUrl}
-            style={{
-              borderWidth: 2,
-              borderStyle: "solid",
-              borderColor: "rgb(255, 255, 255)"
-            }}
-          />)
-      ))
-    );
-    if (members.length > 3) {
-      return members.slice(0, 3) + <p>+ {members.length - 3}</p>;
-    } else {
-      return members;
-    }
-  };
+  const renderAvatars = () => (
+    getProfile(
+      Object.keys(roommembers).filter(id => owner.id !== id),
+      members => {
+        const activeUsers = members.filter(u => !u.deleted)
+
+        return (
+          <>
+            {activeUsers
+              .slice(0, 3)
+              .map(user => (
+                <Avatar
+                  key={user.id}
+                  className={membersAvatar}
+                  alt={user.name}
+                  src={user.photoUrl}
+                  style={{
+                    borderWidth: 2,
+                    borderStyle: "solid",
+                    borderColor: "rgb(255, 255, 255)"
+                  }}
+                />
+            ))}
+            {activeUsers.length > 3 ? <p>+ {activeUsers.length - 3}</p> : null}
+          </>
+        )
+      }
+    )
+  )
 
   const renderTags = () => {
     const tgs = [];
