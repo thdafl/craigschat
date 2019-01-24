@@ -42,7 +42,7 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
     if (tags) {
       tags.map((t) =>
         tgs.push(
-          <Chip key={t} label={"#" + t} style={{ height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3, fontFamily: 'Open Sans' }} />
+          <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 3, fontFamily: 'Open Sans'}} />
         )
       )
     }
@@ -51,26 +51,26 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
 
   return (
     <Card className={cardContainer}>
-      <CardActionArea onClick={onClick} style={{ height: '100%' }}>
-        <CardMedia
-          style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-          image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
-        >
-          <div style={{ height: 70, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            <Typography style={{ fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>{title}</Typography>
+      <CardActionArea onClick={onClick} style={{height: '100%'}}>
+          <CardMedia
+            style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}
+            image={(image) ? image : "https://static.vecteezy.com/system/resources/previews/000/200/370/large_2x/simple-low-poly-background-vector.jpg"}
+          >
+          <div style={{height: 70, textAlign: 'start', padding: '10px 20px 20px 20px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+            <Typography style={{fontSize: 20, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.8)'}}>{title}</Typography>
           </div>
           <div className={ownerInfoWrapper}>
-            {getProfile(owner.id, user => (
-              <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
-            ))}
-            <div className={membersAvatarWrapper}>
-              <div style={{ display: 'flex' }}>{renderAvatars()}</div>
-              <Chip label={`✔️ 12`} style={{ height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3 }} />
+              {getProfile(owner.id, user => (
+                <Avatar className={ownerAvatar} alt="user-avatar" src={user.photoUrl} />
+              ))}
+              <div className={membersAvatarWrapper}>
+                <div style={{display: 'flex'}}>{renderAvatars()}</div>
+                <Chip label={`✔️ 12`} style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 12, fontWeight: 200, color: 'white', marginRight: 3}} />
+              </div>
             </div>
-          </div>
-        </CardMedia>
+          </CardMedia>
 
-        {/* <CardContent className={cardContent}>
+          {/* <CardContent className={cardContent}>
             <div style={{display: 'flex', textAlign: 'start', height: 60, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis'}}>
               <Typography style={{fontSize: 14, fontWeight: 400, color: 'rgb(72, 72, 72)', paddingLeft: 3, fontFamily: 'Open Sans'}}>{description}</Typography>
             </div>
