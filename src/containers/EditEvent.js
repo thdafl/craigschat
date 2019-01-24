@@ -10,10 +10,9 @@ class EditEvent extends Component {
     venue: "",
     details: "",
     date: "",
+    time: "",
     edit: false
   };
-
-
 
   componentDidMount() {
     if (this.props.location.state) {
@@ -35,7 +34,7 @@ class EditEvent extends Component {
     const dateObj = new Date(this.state.date)
     const sortDate = dateObj.getTime()
     const dateString = dateObj.toLocaleString('en-us', { month: 'short', day: 'numeric' });
-    const { title, venue, details, date } = this.state
+    const { title, venue, details, date, time } = this.state
 
     firebaseDb
       .ref("events/" + chatRoomId + "/" + id)
@@ -44,6 +43,7 @@ class EditEvent extends Component {
         sortDate,
         title,
         venue,
+        time,
         details,
         date,
         dateString
@@ -67,6 +67,18 @@ class EditEvent extends Component {
               label="Date"
               type="date"
               value={this.state.date}
+              InputLabelProps={{
+                shrink: true
+              }}
+              onChange={this.onInputChange}
+              required
+            />
+            <TextField
+              id="time"
+              name="time"
+              label="Time"
+              type="time"
+              value={this.state.time}
               InputLabelProps={{
                 shrink: true
               }}

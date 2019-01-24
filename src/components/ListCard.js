@@ -14,7 +14,7 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
 
   const renderAvatars = () => {
     const members = [];
-    Object.keys(roommembers).map(id =>
+    (roommembers) && Object.keys(roommembers).map(id =>
       (owner.id !== id) && getProfile(id, user => (
         (user.deleted) ? null :
           members.push(<Avatar
@@ -90,12 +90,12 @@ const styles = theme => ({
     margin: 10,
     boxShadow: 'none'
   },
-  cardContent: {
-    padding: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    height: 95
-  },
+  // cardContent: {
+  //   padding: 10,
+  //   paddingLeft: 15,
+  //   paddingRight: 15,
+  //   height: 95
+  // },
   ownerInfoWrapper: {
     display: 'flex',
     alignItems: 'center',

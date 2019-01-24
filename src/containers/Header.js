@@ -46,13 +46,15 @@ class Header extends Component {
       return (
         <div>
           <Button
+            variant="outlined"
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.onClickMenuOpen}
             size="small"
             disableRipple
+            style={{background: 'linear-gradient(135deg, rgba(38, 65, 143, 1) 0%, rgba(92, 107, 192, 1) 100%)', color: 'white', fontWeight: 600}}
           >
-            Signin / Login
+            Sign In/Up
           </Button>
           <Menu
             id="simple-menu"
@@ -74,18 +76,19 @@ class Header extends Component {
               size="small"
               disableRipple
               color="secondary"
-              style={{marginRight: 5, fontWeight: 800}}
+              style={{marginRight: 10, fontWeight: 600}}
             >
               Create a Room
             </Button>
           </Link>
           <Button
+            variant="outlined"
             aria-owns={this.state.menuOpen ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.logout}
             size="small"
             disableRipple
-            style={{marginRight: 5, fontWeight: 500}}
+            style={{marginRight: 20, background: 'linear-gradient(135deg, rgba(38, 65, 143, 1) 0%, rgba(92, 107, 192, 1) 100%)', color: 'white', fontWeight: 600}}
           >
             Logout
           </Button>
@@ -104,8 +107,8 @@ class Header extends Component {
 
   render() {
     return (
-      <AppBar position="absolute" color="default" style={{boxShadow: 'none', backgroundColor: '#eeeeee', borderBottom: '1px solid #eeeeee'}}>
-        <Toolbar style={{display: 'flex', justifyContent: 'space-between'}} className={this.props.classes.toolbar}>
+      <AppBar position="absolute" color="default" style={{boxShadow: 'none', backgroundColor: 'rgb(38, 65, 143)'}}>
+        <Toolbar style={{display: 'flex', justifyContent: 'space-between', alignSelf: 'center'}} className={this.props.classes.toolbar}>
           <div style={{display: 'flex', alignItems: 'center', fontSize: '25px'}}>
             <span role="img" aria-label="logo">🤘</span>
           </div>
@@ -121,14 +124,14 @@ class Header extends Component {
 
 const styles = theme => ({
   toolbar: {
-    // padding: theme.spacing.unit,
-    [theme.breakpoints.down('sm')]: {
-      paddingLeft: '1rem', paddingRight: '1rem'
-    },
+    padding: 0,
     [theme.breakpoints.up('lg')]: {
-      paddingLeft: '8rem', paddingRight: '8rem'
+      width: "80%"
     },
-  },
+    [theme.breakpoints.up('xl')]: {
+      width: "75%"
+    }
+  }
 });
 
 export default withRouter(withStyles(styles)(Header));
