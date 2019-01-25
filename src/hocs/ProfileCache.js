@@ -7,13 +7,21 @@ const onLoad = {}
 
 class ProfileCache extends Component {
   state = {
-    profile: null
+    profiles: {}
   }
 
   componentDidMount() {
     const {id} = this.props
+
+    const ids = [].concat(id)
+
+    ids.forEach((id, idx) => {
+      // Cache hit
+      if (cache[id]) {
+        this.setState(({profiles}) => ({profiles: {...profiles, [id]: cache[id]}}))
+        return
+      }
     
-    if (!cache[id]) {
       // If not already fetching
       if (!onLoad[id]) {
         onLoad[id] = []
@@ -22,23 +30,25 @@ class ProfileCache extends Component {
           cache[id] = snapshot.val()
 
           onLoad[id].forEach(cb => {
+            console.log(id, cache[id])
             cb(cache[id])
           })
         })
       }
 
-      onLoad[id].push(profile => this.setState({profile}))
-    } else {
-      this.setState({profile: cache[id]})
-    }
+      onLoad[id].push(profile => this.setState(({profiles}) => ({profiles: {...profiles, [id]: profile}})))
+    })
   }
   
   render() {
-    return (
-      this.state.profile
-        ? this.props.cb(this.state.profile)
-        : null
-    )
+    const {id, cb} = this.props
+    const {profiles} = this.state
+
+    if (Array.isArray(id)) {
+      return cb(id.map(i => profiles[i]).filter(Boolean))
+    } else {
+      return profiles[id] ? cb(profiles[id]) : null
+    }
   }
 }
 
