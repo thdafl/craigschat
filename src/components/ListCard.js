@@ -19,7 +19,7 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
         const activeUsers = members.filter(u => !u.deleted)
 
         return (
-          <>
+          <div style={{display: 'flex', alignItems: 'center'}}>
             {activeUsers
               .slice(0, 3)
               .map(user => (
@@ -35,8 +35,21 @@ const ListCard = ({ onClick, owner, title, place, description, roommembers, imag
                   }}
                 />
             ))}
-            {activeUsers.length > 3 ? <p>+ {activeUsers.length - 3}</p> : null}
-          </>
+
+            {activeUsers.length > 3 ? 
+            <Avatar style={{
+              borderWidth: 2,
+              borderStyle: "solid",
+              borderColor: "rgb(255, 255, 255)",
+              fontSize: 10,
+              fontWeight: 600,
+              width: '20px',
+              height: '20px'
+            }}>
+              <p>+{activeUsers.length - 3}</p>
+            </Avatar>
+            : null}
+          </div>
         )
       }
     )
