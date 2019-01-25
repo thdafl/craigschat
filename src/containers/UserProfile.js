@@ -84,7 +84,7 @@ class UserProfile extends Component {
 
           <Confirm title={`Are you sure you want to delete your account?`} dangerous>
             {confirm => (
-              <Button style={{color: 'red'}} onClick={this.deleteAccount}>Delete Account</Button>
+              <Button style={{color: 'red'}} onClick={confirm(this.deleteAccount)}>Delete Account</Button>
             )}
           </Confirm>
         </div>
