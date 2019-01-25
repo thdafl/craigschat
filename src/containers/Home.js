@@ -47,7 +47,7 @@ class Home extends Component {
         <div style={{width: '100%', minHeight: 200, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
           {(!usersLoading && !chatroomsLoading) ?
             <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>We have {userTotal} users and {chatroomTotal} communites</Typography>
-            : <div><CircularProgress /></div>
+            : <Typography style={{fontSize: '2.5rem', fontWeight: 800, paddingTop: '1rem', color: 'white'}}>Welcome ようこそ<span role="img" aria-label="welcome" style={{fontSize: '2.5rem'}}>👋 </span></Typography>
           }
           <Typography style={{fontSize: '1.5rem', fontWeight: 600, paddingTop: '1rem', paddingBottom: '3rem', color: 'white'}}>
             Join us, chat, and connect with awesome people have same interests!
@@ -73,6 +73,10 @@ class Home extends Component {
                   }
                   return null
                 })}
+                {(this.props.user.loginUser) &&
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                  <Typography style={{padding: 30, fontSize: 18, fontWeight: 600}}>The end of the lists<span role="img" aria-label="welcome" style={{fontSize: '1.5rem'}}> 🚀</span></Typography>
+                </Grid>}
               </Grid>
               }
             </Grid>
@@ -110,7 +114,7 @@ class Home extends Component {
           </Grid>
         </div>
 
-        {(this.props.user.loginUser) ?
+        {(this.props.user.loginUser || (usersLoading && chatroomsLoading)) ?
         null :
         <div style={{width: '100%'}}>
           <Button
@@ -124,8 +128,10 @@ class Home extends Component {
           >
             Sign In/Up to see more communites
           </Button>
-          <div style={{width: '100%', height: 50, backgroundColor: 'rgb(38, 65, 143)', paddingTop: 80, display: 'flex', flexDirection: 'column'}}>
-            Footer
+          <div style={{width: '100%', backgroundColor: 'rgb(38, 65, 143)', height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+            <a href="https://github.com/awesomechat/craigschat" style={{textDecoration: 'none'}}>
+              <Typography style={{fontSize: '1.2rem', fontWeight: 800, color: 'white'}}><span role="img" aria-label="welcome" style={{fontSize: '1.2rem'}}>🌎 </span>We are open source <span role="img" aria-label="welcome" style={{fontSize: '1.2rem'}}>🧡</span></Typography>
+            </a>
           </div>
         </div>
         }
