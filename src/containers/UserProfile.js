@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import CustomUploadButton from 'react-firebase-file-uploader/lib/CustomUploadButton';
 import { firebaseStorage } from '../config/firebase'
 import { userLogout, userUpdate, userDelete } from '../store/users/actions';
+import Confirm from '../components/Confirm';
 
 class UserProfile extends Component {
   state = {
@@ -81,7 +82,11 @@ class UserProfile extends Component {
             {!isEditting && <Button style={{marginLeft: 'auto'}} onClick={this.toggleEdit}>Edit</Button>}
           </Card>
 
-          <Button style={{color: 'red'}} onClick={this.deleteAccount}>Delete Account</Button>
+          <Confirm title={`Are you sure you want to delete your account?`} dangerous>
+            {confirm => (
+              <Button style={{color: 'red'}} onClick={confirm(this.deleteAccount)}>Delete Account</Button>
+            )}
+          </Confirm>
         </div>
       </div>
     ) : null
