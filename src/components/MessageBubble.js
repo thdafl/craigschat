@@ -1,6 +1,5 @@
 import React from 'react'
 import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment'
 import TimeAgo from 'react-timeago'
 import getProfile from '../hocs/ProfileCache.js';
 
@@ -53,7 +52,7 @@ class MessageBubble extends React.Component {
               }
             })
           }
-          <div style={{color: 'gray', fontSize: '10px', marginLeft: 10, paddingRight: 10}}><TimeAgo date={moment(message.timestamp).toDate()} minPeriod={30}/></div>
+          <div style={{color: 'gray', fontSize: '10px', marginLeft: 10, paddingRight: 10}}><TimeAgo date={new Date(message.timestamp)} minPeriod={30}/></div>
           {user && user.id === message.user.id && <span style={{cursor: 'pointer', color: 'red', fontSize: 10}} onClick={() => onDelete(message)}>Delete</span>}
         </div>
         {this.renderComment(message)}

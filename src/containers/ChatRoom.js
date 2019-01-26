@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import { firebaseDb } from '../config/firebase.js';
-import CustomUploadButton from 'react-firebase-file-uploader/lib/CustomUploadButton';
-import { firebaseStorage } from '../config/firebase.js';
-import {Picker} from 'emoji-mart'
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import { Link } from 'react-router-dom';
-import { withStyles, CircularProgress, Popover, Typography, Fab, Chip } from '@material-ui/core';
-import EmojiIcon from '@material-ui/icons/SentimentSatisfiedAlt';
-import PhotoIcon from '@material-ui/icons/AddAPhoto';
-import IconButton from '@material-ui/core/IconButton';
+import { withStyles, CircularProgress, Typography, Fab, Chip } from '@material-ui/core';
 import Circle from '@material-ui/icons/FiberManualRecord';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -24,6 +16,7 @@ import MessageBubble from '../components/MessageBubble'
 import getProfile from '../hocs/ProfileCache.js';
 import 'emoji-mart/css/emoji-mart.css'
 import Confirm from '../components/Confirm.js';
+import ChatInput from '../components/ChatInput'
 
 const CHUNK_SIZE = 20
 
@@ -41,20 +34,15 @@ class ChatRoom extends Component {
     super(props);
 
     this.state = {
-      emojiAnchor: null,
-      text : "",
+      
       messages : [],
       currentRoomMembers: [],
       initialMessagesLength: null,
       events: [],
       chatroom: null,
-      imageUploading: false,
       eventDialogOpen: false,
       eventSelectedForModal: ''
     }
-
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onButtonClick = this.onButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -197,93 +185,6 @@ class ChatRoom extends Component {
     this.props.history.push("/event/" + chatRoomId, event)
   }
 
-  onTextChange(e) {
-    this.setState({
-      text : e.target.value,
-    });
-  }
-
-  handleUploadStart = () => {
-    this.setState({ imageUploading: true })
-  }
-
-  handleUploadError = () => {
-    this.setState({ imageUploading: false })
-    alert('Upload failed. Please try again.')
-  }
-
-  handleUploadSuccess = filename => {
-    firebaseStorage
-    .ref('messageImage')
-    .child(filename)
-    .getDownloadURL()
-    .then(photoUrl => {
-      console.log("*", photoUrl)
-      const key = firebaseDb.ref('messages/').push().key;
-      const chatRoomId = this.props.match.params.id;
-      const guest = {
-        name: "Guest",
-        photoUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
-      }
-      firebaseDb.ref('messages/' + chatRoomId + '/' + key).set({
-        "id": key,
-        "user" : (this.props.user) ? this.props.user : guest,
-        "image" : photoUrl,
-        "timestamp": moment().toISOString()
-      })
-      this.setState({ imageUploading: false }
-    )
-  })}
-
-  onButtonClick(e) {
-    e.preventDefault();
-    const chatRoomId = this.props.match.params.id;
-
-    if (this.state.text === "") {
-      alert('Please add comment!')
-      return
-    }
-
-    const key = firebaseDb.ref('messages/').push().key;
-    const guest = {
-      name: "Guest",
-      photoUrl: "https://image.flaticon.com/icons/svg/145/145849.svg"
-    }
-
-    firebaseDb.ref('messages/' + chatRoomId + '/' + key).set({
-      "id": key,
-      "user" : (this.props.user) ? this.props.user : guest,
-      "text" : this.state.text,
-      "timestamp": moment().toISOString()
-    })
-
-    const crm = this.state.currentRoomMembers;
-
-    // if currentRoomMembers is null, save the user to the db
-    if (!crm) {
-      firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/' + this.props.user.id).set(this.props.user)
-    } else {
-      // if the user is guest, do nothing
-      if (!this.props.user) {
-        console.log("guest user!")
-      // if the user is NOT existed in currentRoomMembers stets, add the user to the db
-      } else if (this.props.user.id in crm === false) {
-        console.log("user NOT existed!")
-        firebaseDb.ref('chatrooms/' + chatRoomId + '/roommembers/' + this.props.user.id).set(this.props.user)
-      } 
-    }
-
-    this.setState({userName: "", text: ""})
-  }
-
-  toggleEmoji = e => {
-    if (!this.state.emojiAnchor) {
-      this.setState({emojiAnchor: e.currentTarget})
-    } else {
-      this.setState({emojiAnchor: null})
-    }
-  }
-
   openEventDialog = (event) => {
     this.setState({eventDialogOpen: !this.state.eventDialogOpen, eventSelectedForModal: event})
   }
@@ -326,9 +227,11 @@ class ChatRoom extends Component {
               <div style={{width: '90%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 15}}>
                 <Chip label={(this.state.chatroom) && this.state.chatroom.place} style={{height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', margin: 3}} />
                 {(this.state.chatroom) && 
+                (this.state.chatroom.tags?
                   this.state.chatroom.tags.map((t) =>
                     <Chip key={t} label={"#" + t} style={{height: 23, backgroundColor: 'gray', fontSize: 11, fontWeight: 400, color: 'white', margin: 3}} />
-                  )
+                  ):
+                  null)
                 }
               </div>
 
@@ -412,50 +315,7 @@ class ChatRoom extends Component {
                 )}
               </InfiniteScroll>
             </div>
-            <form onSubmit={this.onButtonClick} autocomplete="off" style={{display: 'flex', flexDirection: 'center', alignItems: 'center', width: '90%', paddingBottom: 10}}>
-              <TextField
-                id="comment-box"
-                margin="normal"
-                variant="outlined"
-                onChange={this.onTextChange}
-                value={this.state.text}
-                style={{width: '100%', height: '3rem', marginTop: '8px'}}
-              />
-              
-              <div style={{display: 'flex', paddingLeft: '10px'}}>
-                <IconButton aria-label="Edit Details" onClick={this.toggleEmoji}>
-                  <EmojiIcon />
-                </IconButton>
-                <Popover
-                  open={Boolean(this.state.emojiAnchor)}
-                  anchorEl={this.state.emojiAnchor}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                  onClose={this.toggleEmoji}
-                >
-                  <Picker onSelect={({native}) => this.setState(({text}) => ({text: text + native}))} native/>
-                </Popover>
-
-                <CustomUploadButton
-                  accept="image/*"
-                  storageRef={firebaseStorage.ref('messageImage')}
-                  onUploadStart={this.handleUploadStart}
-                  onUploadError={this.handleUploadError}
-                  onUploadSuccess={this.handleUploadSuccess}
-                  onProgress={this.handleProgress}
-                  style={{display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'gray'}}
-                >
-                  {(this.state.imageUploading) ? <CircularProgress size={20} /> : <PhotoIcon />}
-                </CustomUploadButton>
-                
-              </div>
-            </form>
+            <ChatInput {...this.props}/>
           </Grid>
         </Grid>
 
