@@ -6,21 +6,24 @@ const ChatRoomEvents = React.memo(({ events, openEventDialog }) => {
   return (
     <div>
       <div style={{display: 'flex'}}>
-        <Typography style={{color: 'white', fontSize: 20, fontWeight: 600, textAlign: 'start'}}>Scheduled Events</Typography>
+        <Typography style={{color: 'black', fontSize: 17, fontWeight: 600, textAlign: 'start'}}>Upcomming Events</Typography>
       </div>
       <div>
         {(events.length) ? 
           events.map((event, id) => {
             return (
-              <Card id={id} onClick={() => openEventDialog(event)} style={{display: 'flex', flexDirection: 'column', marginTop: 10, marginBottom: 10, padding: 20, cursor: 'pointer'}}>
-                <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}, {event.time}</Typography>
-                <Typography style={{color: 'black', fontSize: 18, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
-                <Typography style={{color: 'black', fontSize: 15, fontWeight: 400, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.details}</Typography>
-              </Card>
+              <div id={id} onClick={() => openEventDialog(event)} style={{display: 'flex', flexDirection: 'column', marginTop: 5, marginBottom: 5, cursor: 'pointer'}}>
+                <Typography style={{color: 'rgb(83, 175, 135)', fontSize: 12, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>{event.dateString}, {event.time}</Typography>
+                <Typography style={{color: 'black', fontSize: 13, fontWeight: 300, textAlign: 'start', paddingRight: 10}}>{event.title} @{event.venue}</Typography>
+              </div>
             )
           }) 
-        : <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start', paddingRight: 10}}>No Event is scheduled yet</Typography>
+        : <Typography style={{color: 'black', fontSize: 13, fontWeight: 300, textAlign: 'start', paddingRight: 10}}>No Event is scheduled yet</Typography>
         }
+      </div>
+      <div style={{display: 'flex', flexDirection: 'column', paddingTop: 10}}>
+        <Typography style={{color: 'black', fontSize: 17, fontWeight: 600, textAlign: 'start'}}>Past Events</Typography>
+        <Typography style={{color: 'black', fontSize: 13, fontWeight: 300, textAlign: 'start', paddingRight: 10}}>No Past Event yet.</Typography>
       </div>
     </div>
   );
