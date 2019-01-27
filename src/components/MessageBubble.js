@@ -8,18 +8,17 @@ class MessageBubble extends React.Component {
     imageHeight: 260,
   }
 
+  updateImageHeight = e => {
+    this.setState({imageHeight: e.target.offsetHeight})
+  }
+
   renderComment(message) {
     if (message.text) {
       return <div style={{textAlign: 'left', fontSize: '1rem', fontWeight: 100, wordBreak: 'break-all'}}>{message.text}</div>
     } else if (message.image) {
-      const img = new Image();
-      img.src = message.image;
-      img.onload = () => {
-        this.setState({imageHeight: img.height});
-      }
       return (
         <div style={{textAlign: 'left'}}>
-          <img src={message.image} alt="messageImage" style={{border: 'solid 1px gray', maxHeight: 250, maxWidth: '80%', height: this.state.imageHeight}}></img>
+          <img onLoad={this.updateImageHeight} src={message.image} alt="messageImage" style={{border: 'solid 1px gray', maxHeight: 250, maxWidth: '80%', height: this.state.imageHeight}}></img>
         </div>
       )
     }
@@ -27,6 +26,7 @@ class MessageBubble extends React.Component {
 
   render () {
     const {user, message, onDelete} = this.props;
+    console.log(message.id)
 
     return (
     <div style={{fontSize: '20px', display: 'flex', margin: '10px'}}>
