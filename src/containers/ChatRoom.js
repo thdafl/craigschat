@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import { Link } from 'react-router-dom';
-import { withStyles, CircularProgress, Typography, Fab, Chip } from '@material-ui/core';
+import { withStyles, CircularProgress, Typography, Chip } from '@material-ui/core';
 import Circle from '@material-ui/icons/FiberManualRecord';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,6 +17,7 @@ import getProfile from '../hocs/ProfileCache.js';
 import 'emoji-mart/css/emoji-mart.css'
 import Confirm from '../components/Confirm.js';
 import ChatInput from '../components/ChatInput'
+import Header from '../containers/Header';
 
 const CHUNK_SIZE = 20
 
@@ -192,40 +193,41 @@ class ChatRoom extends Component {
   render() {
     return (
       <div className="App" style={{height: '100%'}}>
-        <Grid container style={{height: '100%', position: 'fixed'}}> 
+        <Grid container style={{height: '100%', position: 'fixed', display: 'flex', justifyContent: 'center'}}> 
+          <Header user={this.props.user} />
           
-          <Hidden xsDown>
-            <Grid item md={4} lg={4} style={{display: 'block', height: '100%', overflow: 'auto', alignItems: 'center', backgroundColor: 'rgb(38, 65, 143)'}}>
-              <div style={{display: 'flex', alignItems: 'center', height: 64, paddingLeft: 20}}>
-                <span role="img" aria-label="logo" style={{fontSize: '25px', cursor: 'pointer'}} onClick={() => this.props.history.push('/')}>🤘</span>
-                  {(this.state.chatroom && this.props.user) && (this.state.chatroom.owner.id === this.props.user.id) ? 
-                    <div style={{display: 'flex', paddingLeft: 20}}>
-                      <Chip label="Create Event" style={{height: 23, backgroundColor: 'rgb(253, 203, 110)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
-                      onClick={() => this.props.history.push(`/event/${this.props.match.params.id}`)} />
-                      <Chip label="Edit Room Details" style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
-                      onClick={() => this.props.history.push(`${this.props.location.pathname}/edit`)} />
-                      <Confirm title={`Are you sure you want to delete Chatroom "${this.state.chatroom.title}"?`} dangerous>
-                       {confirm => (
-                          <Chip
-                            label="Delete Room"
-                            style={{height: 23, backgroundColor: 'rgb(237, 119, 111)', fontSize: 11, fontWeight: 400, color: 'white'}} 
-                            onClick={confirm(() => this.deleteChatroom(this.state.chatroom))}
-                          />
-                        )} 
-                      </Confirm>
-                    </div>
-                  : null }
-              </div>
+          <Hidden smDown>
+            <Grid item sm={4} md={3} lg={3} style={{display: 'block', paddingTop: 30, height: '100%', overflow: 'auto', alignItems: 'center'}}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 40}}>
 
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              {(this.state.chatroom && this.props.user) && (this.state.chatroom.owner.id === this.props.user.id) ? 
+                <div style={{width: '100%', display: 'flex', paddingBottom: 15}}>
+                  <div style={{display: 'flex', paddingLeft: 20}}>
+                    <Chip label="Create Event" style={{height: 23, backgroundColor: 'rgb(253, 203, 110)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
+                    onClick={() => this.props.history.push(`/event/${this.props.match.params.id}`)} />
+                    <Chip label="Edit Room Details" style={{height: 23, backgroundColor: 'rgb(45, 152, 218)', fontSize: 11, fontWeight: 400, color: 'white', marginRight: 5}} 
+                    onClick={() => this.props.history.push(`${this.props.location.pathname}/edit`)} />
+                    <Confirm title={`Are you sure you want to delete Chatroom "${this.state.chatroom.title}"?`} dangerous>
+                     {confirm => (
+                        <Chip
+                          label="Delete Room"
+                          style={{height: 23, backgroundColor: 'rgb(237, 119, 111)', fontSize: 11, fontWeight: 400, color: 'white'}} 
+                         onClick={confirm(() => this.deleteChatroom(this.state.chatroom))}
+                        />
+                      )} 
+                    </Confirm>
+                  </div>
+                </div>
+              : null }
 
               <div style={{width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingBottom: 15}}>
-                <Typography style={{color: 'white', fontSize: 30, fontWeight: 600, textAlign: 'start', lineHeight: '2rem', paddingBottom: 10}}>{(this.state.chatroom) && this.state.chatroom.title}</Typography>
-                <Typography style={{color: 'white', fontSize: 15, fontWeight: 600, textAlign: 'start'}}>{(this.state.chatroom) && this.state.chatroom.description}</Typography>
+                <Typography style={{color: 'black', fontSize: 22, fontWeight: 600, textAlign: 'start', lineHeight: '2rem', paddingBottom: 10}}>{(this.state.chatroom) && this.state.chatroom.title}</Typography>
+                <Typography style={{color: 'black', fontSize: 13, fontWeight: 300, textAlign: 'start'}}>{(this.state.chatroom) && this.state.chatroom.description}</Typography>
               </div>
-
-              <div style={{width: '90%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 15}}>
+              <div style={{width: '90%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 5}}>
                 <Chip label={(this.state.chatroom) && this.state.chatroom.place} style={{height: 23, backgroundColor: '#53af87', fontSize: 11, fontWeight: 400, color: 'white', margin: 3}} />
+              </div>
+              <div style={{width: '90%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 15}}>
                 {(this.state.chatroom) && 
                 (this.state.chatroom.tags?
                   this.state.chatroom.tags.map((t) =>
@@ -235,32 +237,6 @@ class ChatRoom extends Component {
                 }
               </div>
 
-              <div style={{display: 'flex', width: '90%', flexWrap: 'wrap', paddingBottom: 30}}>
-                {(this.state.chatroom) && getProfile(this.state.chatroom.owner.id, user => (
-                  <div style={{position: 'relative'}}>
-                    <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
-                    {user.online ? 
-                      <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
-                      : <div style={{position: 'absolute', top: -1, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
-                    }
-                    <div style={{position: 'absolute', top: -1, left: -8, color: 'pink'}}><span role="img" aria-label="logo">🎖 </span></div>
-                  </div>
-                ))}
-                {this.state.currentRoomMembers.map((m) =>
-                  ((this.state.chatroom) && this.state.chatroom.owner.id !== m.id) &&
-                  getProfile(m.id, user => (
-                    (user.deleted) ? 
-                    null :
-                    <div style={{position: 'relative'}}>
-                      <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
-                      {user.online ? 
-                        <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
-                        : <div style={{position: 'absolute', top: -3, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
-                      }
-                    </div>
-                  )
-                ))}
-              </div>
               <div style={{width: '90%'}}>
                 <ChatRoomEvents
                   events={this.state.events}
@@ -273,33 +249,8 @@ class ChatRoom extends Component {
             </Grid>
           </Hidden>
 
-          <Grid item xs={12} sm={12} md={8} lg={8} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%', backgroundColor: 'white'}}>
-            <div style={{display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: 64, borderBottom: '1px solid #eeeeee'}}>
-              <div style={{display: 'flex', paddingLeft: 30, fontSize: 30}}>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🐵 </span>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>11</Typography>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Members</Typography>
-                </div>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">🎒 </span>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>22</Typography>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Events</Typography>
-                </div>
-                <div style={{display: 'flex', paddingRight: 20}}><span role="img" aria-label="logo">✌️</span>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 25, fontWeight: 700, paddingLeft: 10}}>33</Typography>
-                  <Typography style={{display: 'flex', alignItems: 'center', color: 'gray', fontSize: 15, fontWeight: 700, paddingLeft: 5}}>Something</Typography>
-                </div>
-              </div>
-              {(this.props.user) ? 
-              <Link to="/user" style={{paddingRight: 30}}>
-                <Fab size='small' disableRipple>
-                  <Avatar 
-                    alt="user avatar"
-                    src={(this.props.user) && this.props.user.photoUrl}
-                  />
-                </Fab>
-              </Link> : null}
-            </div>
-            <div id="chatbox" style={{height: '90%', width: '100%', overflow: 'auto'}}>
+          <Grid item xs={12} sm={8} md={6} lg={6} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
+            <div id="chatbox" style={{height: '95%', width: '100%', overflow: 'auto'}}>
               <InfiniteScroll
                 pageStart={0}
                 loadMore={this.loadEarlier}
@@ -320,8 +271,46 @@ class ChatRoom extends Component {
               currentRoomMembers={this.state.currentRoomMembers} 
             />
           </Grid>
+
+          <Hidden mdDown>
+          <Grid item md={2} lg={2} style={{display: 'block', height: '100%', paddingTop: 50, overflow: 'auto', alignItems: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 20, paddingLeft: '10%', paddingRight: '10%'}}>
+                {(this.state.chatroom) && getProfile(this.state.chatroom.owner.id, user => (
+                  <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
+                  <div style={{position: 'relative'}}>
+                    <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
+                    {user.online ? 
+                      <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
+                      : <div style={{position: 'absolute', top: -1, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
+                    }
+                    <div style={{position: 'absolute', top: -1, left: -8, color: 'pink'}}><span role="img" aria-label="logo">🎖 </span></div>
+                  </div>
+                  <Typography style={{fontSize: 14}}>{user.name}</Typography>
+                  </div>
+                ))}
+                {this.state.currentRoomMembers.map((m) =>
+                  ((this.state.chatroom) && this.state.chatroom.owner.id !== m.id) &&
+                  getProfile(m.id, user => (
+                    (user.deleted) ? 
+                    null :
+                    <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
+                    <div style={{position: 'relative'}}>
+                      <Avatar alt="user avatar" src={user.photoUrl} style={{marginRight: '10px',  width: '2rem', height: '2rem', marginBottom: 5}}/>
+                      {user.online ? 
+                        <div style={{position: 'absolute', top: -1, right: 0, color: 'limegreen'}}><Circle style={{fontSize: 20}} /></div>
+                        : <div style={{position: 'absolute', top: -3, right: 0, color: 'gray'}}><Circle style={{fontSize: 20}} /></div>
+                      }
+                    </div>
+                    <Typography style={{fontSize: 14}}>{user.name}</Typography>
+                    </div>
+                  )
+                ))}
+              </div>
+          </Grid>
+          </Hidden>
         </Grid>
 
+        
         <Dialog
           onClose={this.openEventDialog}
           aria-labelledby="customized-dialog-title"

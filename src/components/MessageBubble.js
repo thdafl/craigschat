@@ -14,7 +14,7 @@ class MessageBubble extends React.Component {
 
   renderComment(message) {
     if (message.text) {
-      return <div style={{textAlign: 'left', fontSize: '1rem', fontWeight: 100, wordBreak: 'break-all'}}>{message.text}</div>
+      return <div style={{textAlign: 'left', fontSize: 14, fontWeight: 300, wordBreak: 'break-all'}}>{message.text}</div>
     } else if (message.image) {
       return (
         <div style={{textAlign: 'left'}}>
@@ -29,7 +29,7 @@ class MessageBubble extends React.Component {
     console.log(message.id)
 
     return (
-    <div style={{fontSize: '20px', display: 'flex', margin: '10px'}}>
+    <div style={{fontSize: '20px', display: 'flex', margin: '10px 20px 10px 20px'}}>
       {(message.user.name === 'Guest') 
         ? <Avatar style={{width: '30px', height: '30px', marginRight: '10px'}} alt="user-avator" src={'https://image.flaticon.com/icons/svg/145/145849.svg'} />
         : getProfile(message.user.id, u => {

@@ -115,10 +115,11 @@ class ChatInput extends React.Component{
               <TextField
                 id="comment-box"
                 margin="normal"
-                variant="outlined"
+                // variant="outlined"
+                placeholder="Chat!"
                 onChange={this.onTextChange}
                 value={this.state.text}
-                style={{width: '100%', height: '3rem', marginTop: '8px'}}
+                style={{width: '100%', height: '2.7rem', marginTop: 0, marginBottom: 0}}
               />
               
               <div style={{display: 'flex', paddingLeft: '10px'}}>
