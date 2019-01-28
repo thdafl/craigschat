@@ -26,7 +26,6 @@ class MessageBubble extends React.Component {
 
   render () {
     const {user, message, onDelete} = this.props;
-    console.log(message.id)
 
     return (
     <div style={{fontSize: '20px', display: 'flex', margin: '10px 20px 10px 20px'}}>
