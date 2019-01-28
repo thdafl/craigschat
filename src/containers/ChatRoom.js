@@ -315,7 +315,10 @@ class ChatRoom extends Component {
                 )}
               </InfiniteScroll>
             </div>
-            <ChatInput {...this.props}/>
+            <ChatInput 
+              {...this.props}
+              currentRoomMembers={this.state.currentRoomMembers} 
+            />
           </Grid>
         </Grid>
 

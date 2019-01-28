@@ -90,7 +90,7 @@ class ChatInput extends React.Component{
       "timestamp": date.toISOString()
     })
 
-    const crm = this.state.currentRoomMembers;
+    const crm = this.props.currentRoomMembers;
 
     // if currentRoomMembers is null, save the user to the db
     if (!crm) {
